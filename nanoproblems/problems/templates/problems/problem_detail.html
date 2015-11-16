@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Problems</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"/>
+  {% load staticfiles %}
+  <link rel="stylesheet" type="text/css" href="{% static "css/bobblehead.css" %}"/>
+</head>
+
+<body class="container">
+  <div class="row pad-10 margin-top-20 highlight">
+    <div class="col-md-12">
+      <a href="{% url 'problems:problems_list' %}">
+        <img src="{% static "images/arrow-back-white-1x.png" %}" alt="Return to main page"/>
+        Back
+      </a>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <h2>{{problem.title}}</h2>
+      <div>
+        Created by:
+        <a href="{% url 'users:show' problem.user.user_key %}">
+          {{problem.user}}
+        </a>
+      </div>
+      <div>
+        Posted: {{problem.posted}}
+      </div>
+      <h4>{{problem.description|safe}}</h4>
+    </div>
+  </div>
+  <hr>
+  <div class="row">
+    <div class="col-md-2">
+      <b>Difficulty</b>
+    </div>
+    <div class="col-md-10">
+      {{ problem.difficulty }}
+    </div>
+  </div>
+
+  <div class="row pad-top-20">
+    <div class="col-md-2">
+      <b>Tags</b>
+    </div>
+    <div class="col-md-10">
+      <ul class="list-unstyled">
+      {% for tag in problem.tags.all %}
+          <li class="badge">{{ tag.tag_name }}</li>
+      {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  {% if current_user == project.user.email %}
+  <div class="row">
+    <div class="col-md-offset-2 col-md-1">
+      <div class="text-center">
+        <div>
+          <a href="">
+            <img src="{% static "images/edit-black-2x.png" %}" alt="Edit"/>
+          </a>
+        </div>
+        Edit
+      </div>
+    </div>
+
+    <div class="col-md-1">
+      <div class="text-center">
+        <div>
+          <a href="">
+            <img src="{% static "images/delete-black-2x.png" %}" alt="Delete"/>
+          </a>
+        </div>
+        Delete
+      </div>
+    </div>
+  </div>
+  {% endif %}
+  <hr>
+
+  <div class="row">
+    <div class="col-md-12">
+      <h4>Solutions for this problem</h4>
+    </div>
+    <div class="col-md-12">
+    {% if solutions_list %}
+      <ul class="list-unstyled">
+       {% for solution in solutions_list %}
+       <li>
+         <a href="{% url 'problems:show_solution' problem.id solution.id %}">{{solution.title}}, by {{ solution.user.nickname }}</a>
+        
+       </li>
+       {% endfor %}
+     </ul>
+    {% else %}
+        No solutions yet
+    {% endif %}
+    </div>
+  </div>
+  <hr>
+  <div class="row">
+    <div class="col-md-12">
+      <b><a href="{% url 'problems:new_solution' problem.id %}">Submit your solution</a></b>
+    </div>
+  </div>
+
+</body>
+</html>

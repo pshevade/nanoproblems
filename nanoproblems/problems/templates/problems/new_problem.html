@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<!-- <html ng-app="newProblem"> -->
+<html>
+<head>
+  <title>Nanoproblems</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"/>
+  {% load staticfiles %}
+  <link rel="stylesheet" type="text/css" href="{% static "css/bobblehead.css" %}"/>
+</head>
+
+<body class="container">
+  <div class="row pad-10 margin-top-20 highlight">
+    <div class="col-md-12">
+      <a href="{% url 'problems:problems_list' %}">
+        <img src="{% static "images/arrow-back-white-1x.png" %}" alt="Back to Profile"/>
+        Cancel
+      </a>
+    </div>
+  </div>
+
+  <form method="post" class="form-horizontal" ng-controller="FormController" autocomplete="off">
+    <h2 class="col-md-offset-2">Create new problem</h2>
+    {% csrf_token %}
+    {{form}}
+    <!-- <div class="form-group pad-top-20">
+      <label for="id_title" class="col-md-2 control-label">Title</label>
+      <div class="col-md-4">
+        <input type="text" class="form-control" ng-model="title" required>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="id_description" class="col-md-2 control-label">Instructions</label>
+      <div class="col-md-4">
+        <textarea class="form-control" rows="3" ng-model="description" placeholder="Instructions and objectives for this problem"required></textarea>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="difficulty" class="col-md-2 control-label">Difficulty</label>
+      <div class="col-md-4">
+        <select class="form-control" ng-model="difficulty" required>
+          <option value="EASY">Easy</option>
+          <option value="MEDIUM">Medium</option>
+          <option value="HARD">Hard</option>
+        </select>
+      </div>
+    </div>
+
+
+    <div class="form-group">
+      <label for="id_tags" class="col-md-2 control-label">Tags</label>
+      <div class="col-md-4">
+        <input type="text" class="form-control" id="id_tags" ng-keydown="checkKeyDown($event)" ng-blur="checkKeyDown($event)" ng-model="searchText" ng-change="search()" placeholder="Tags to help index and search"required>
+        <ul class="list-group">
+          <li ng-repeat="suggestions in suggestions | limitTo: 3" class="list-group-item" ng-class="{active: selectedIndex === $index}">
+            {% verbatim %}
+              {{ suggestions }}
+            {% endverbatim %}
+          </li>
+        </ul>
+        <div ng-repeat="selectedTag in selectedTags" class="inline">
+          {% verbatim %}
+            {{ selectedTag }} <a ng-click="removeTag($index)" class="badge">x</a> &nbsp &nbsp
+          {% endverbatim %}
+        </div>
+      </div>
+      <div class="col-md-6 gray-text">
+        Press ENTER to add a new tag or TAB to autocomplete
+      </div>
+    </div>-->
+
+    <div class="form-group">
+      <div class="col-md-offset-2 col-md-4">
+        <button type="submit" class="btn btn-default" ng-click="submit()">Submit</button>
+      </div>
+    </div> 
+  </form>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+  <script src="{% static "js/newProblem.js" %}"></script>
+
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Nanoproblems</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"/>
+  {% load staticfiles %}
+  <link rel="stylesheet" type="text/css" href="{% static "css/bobblehead.css" %}"/>
+</head>
+
+<body class="container">
+  <div class="row pad-10 margin-top-20 highlight">
+    <div class="col-md-12">
+      <a href="{% url 'users:show' user.user_key %}">
+        <img src="{% static "images/arrow-back-white-1x.png" %}" alt="Back to Profile"/>
+        Cancel
+      </a>
+    </div>
+  </div>
+
+  <form action="{% url 'users:edit' %}" method="post" class="form-horizontal pad-top-20">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="id_nickname" class="col-md-2 control-label">Nickname</label>
+      <div class="col-md-4">
+        <input type="text" class="form-control" id="id_nickname" name="nickname" value="{{ user.nickname }}" required>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="id_nanodegree" class="col-md-2 control-label">Nanodegree</label>
+      <div class="col-md-4">
+        <select id="id_nanodegree" name="nanodegree" class="form-control">
+          {% for nanodegree in nanodegree_choices %}
+            {% if user.nanodegree == nanodegree.0 %}
+            <option value="{{ nanodegree.0 }}" selected="True">{{ nanodegree.1 }}</option>
+            {% else %}
+            <option value="{{ nanodegree.0 }}">{{ nanodegree.1 }}</option>
+            {% endif %}
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="col-md-offset-2 col-md-4">
+        <button type="submit" class="btn btn-default">Submit</button>
+      </div>
+    </div>
+
+  </form>
+
+</body>
+</html>

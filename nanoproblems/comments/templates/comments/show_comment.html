@@ -1,0 +1,22 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Nanoproblems</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"/>
+  {% load staticfiles %}
+  <link rel="stylesheet" type="text/css" href="{% static "css/bobblehead.css" %}"/>
+</head>
+
+<body class="container">
+  <div class="row pad-10 margin-top-20 highlight">
+    <div class="col-md-12">
+    </div>
+  </div>
+  <p>
+  {{comment.content}}
+  {{comment.user.nickname}}
+</p>
+</body>
+</html>

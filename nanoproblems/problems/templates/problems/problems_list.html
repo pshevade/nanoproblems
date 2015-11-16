@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Nanoproblems</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"/>
+  {% load staticfiles %}
+  <link rel="stylesheet" type="text/css" href="{% static "css/bobblehead.css" %}"/>
+</head>
+
+<body class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h1>More problems to practice!</h1>
+   </div>
+  </div>
+
+  <div class="row pad-10">
+    <div class="col-md-12">
+      Welcome, <a href="{% url 'users:show' user.user_key %}">{{ user.nickname }}</a>
+      <div class="pull-right">
+        <b><a href="{% url 'users:logout' %}">Log out</a></b>
+      </div>
+    </div>
+  </div>
+
+  <div class="row pad-10 highlight">
+    <div class="col-md-12">
+      <a href="{% url 'problems:new_problem' %}">
+        <img src="{% static "images/add-circle-white-1x.png" %}" alt="Add new project"/>
+        &nbspAdd new problem
+      </a>
+    </div>
+  </div>
+ 	<br>
+	<div class="col-md-9">
+      {% for problem in latest_problems_list %}
+      <div class="panel panel-default">
+      	<div class="panel-body">
+		  <a href="{% url 'problems:problem_detail' problem.id%}">{{problem.title}}</a>
+		</div>
+	  </div>
+	  {% endfor %}
+	</div>

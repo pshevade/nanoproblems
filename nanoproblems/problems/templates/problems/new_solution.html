@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Nanoproblems</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"/>
+  {% load staticfiles %}
+  <link rel="stylesheet" type="text/css" href="{% static "css/bobblehead.css" %}"/>
+</head>
+
+<body class="container">
+	<div class="row pad-10 margin-top-20 highlight">
+		<div class="col-md-12">
+			<a href="{% url 'problems:problem_detail' problem_id %}">
+				<img src="{% static "images/arrow-back-white-1x.png" %}" alt="Back to Problem"/>
+				Cancel
+			</a>
+		</div>
+	</div>
+
+	<form action="{% url 'problems:new_solution' problem_id %}" method="post" class="form-horizontal" autocomplete="off">
+		{% csrf_token %}
+
+	<div class="form-group pad-top-20">
+      <label for="id_title" class="col-md-2 control-label">Title</label>
+      <div class="col-md-4">
+        <input name='title' id='id_title' type="text" class="form-control" ng-model="title" required>
+      </div>
+    </div>
+
+	<div class="form-group">
+      <label for="id_description" class="col-md-2 control-label">Description</label>
+      <div class="col-md-4">
+        <textarea class="form-control" id="id_description" name="description" rows="3" required></textarea>
+      </div>
+    </div>
+    
+	<div class="form-group">
+	  <div class="col-md-offset-2 col-md-4">
+	    <button type="submit" class="btn btn-default">Submit</button>
+	  </div>
+	</div>
+	</form>
+
+</body>
+</html>
+
