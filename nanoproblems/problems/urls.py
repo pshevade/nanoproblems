@@ -8,9 +8,9 @@ urlpatterns = [
     # url(r'^(?P<problem_id>[0-9]+)/edit_problem', views.edit_problem, name='edit_problem'),
     url(r'new_problem/$', views.new_problem, name='new_problem'),
     # url(r'^(?P<problem_id>[0-9]+)/delete_problem', views.delete_problem, name='delete_problem'),
-    # url(r'^(?P<problem_id>[0-9]+)/(?P<solution_id>[0-9]+)/add_new_comment/', views.add_new_comment, name='add_new_comment'),
-    # url(r'^(?P<problem_id>[0-9]+)/show_solution/(?P<solution_id>[0-9]+)/edit_comment/(?P<comment_id>[0-9]+)$', views.edit_comment, name='edit_comment'),
-    # url(r'^(?P<problem_id>[0-9]+)/show_solution/(?P<solution_id>[0-9]+)/delete_comment/(?P<comment_id>[0-9]+)$', views.delete_comment, name='delete_comment'),
+    url(r'^(?P<problem_id>[0-9]+)/add_new_comment/', views.add_comment_to_problem, name='add_comment_to_problem'),
+    url(r'^(?P<problem_id>[0-9]+)/edit_comment/(?P<comment_id>[0-9]+)$', views.edit_comment_from_problem, name='edit_comment_from_problem'),
+    url(r'^(?P<problem_id>[0-9]+)/delete_comment/(?P<comment_id>[0-9]+)$', views.delete_comment_from_problem, name='delete_comment_from_problem'),
     url(r'^(?P<problem_id>[0-9]+)/new_solution', views.new_solution, name='new_solution'),
     url(r'^(?P<problem_id>[0-9]+)/show_solution/(?P<solution_id>[0-9]+)', views.show_solution, name='show_solution'),
 

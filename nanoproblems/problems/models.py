@@ -41,7 +41,8 @@ class Problem(models.Model):
     difficulty = models.CharField(max_length=10, choices=DIFFICULTY_LEVEL, default=1)
     # due_date = models.DateTimeField(default=None)
     tags = models.ManyToManyField(Tag)
-    questions = models.ManyToManyField(Question)
+    # questions = models.ManyToManyField(Question)
+    comments = models.ManyToManyField(Comment)
 
 
 class Solution(models.Model):

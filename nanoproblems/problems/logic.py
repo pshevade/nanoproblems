@@ -1,5 +1,6 @@
 
 from .models import Tag
+import comments.logic as comment_service
 
 
 def _get_tags(tag_string):
@@ -21,3 +22,44 @@ def _get_tags(tag_string):
         if tag_object not in tag_objects_list:
             tag_objects_list.append(tag_object)
     return tag_objects_list
+
+
+def addcommentproblem(request, problem):
+    """ Add a comment to a given problem.
+    """
+    comment = comment_service.createcomment(request)
+    if comment:
+        problem.comments.add(comment)
+        return True
+    else:
+        print "something went wrong, couldn't create a new comment for problem."
+        return False
+
+
+def editcommentproblem(request, problem, comment_id):
+    """ Edit comment.
+    """
+    comment = comment_service.checkcommentexists(request, comment_id)
+    # Return false if comment is not in this problem! 
+    if comment:
+        if comment not in problem.comments:
+            return False
+        comment_service.editcomment(request, comment)
+        return True
+    else:
+        print "something went wrong, couldn't find comment"
+        return False
+
+
+def deletecommentproblem(request, problem, comment_id):
+    comment = comment_service.checkcommentexists(request, comment_id)
+    if comment:
+        if comment in problem.comments:
+            problem.comments.remove(comment)
+        else:
+            return False
+        comment_service.deletecomment(request, comment)
+        return True
+    else:
+        print "something went wrong, couldn't find comment"
+        return False
