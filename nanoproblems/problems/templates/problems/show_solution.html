@@ -31,7 +31,32 @@
       {{ solution.description|safe}}
     </div>
   </div>
+  {% if user_email == problem.user.email %}
+  <div class="row">
+    <div class="col-md-offset-2 col-md-1">
+      <div class="text-center">
+        <div>
+          <a href="{% url 'problems:edit_solution' problem.id solution.id%}">
+            <img src="{% static "images/edit-black-2x.png" %}" alt="Edit"/>
+          </a>
+        </div>
+        Edit
+      </div>
+    </div>
 
+    <div class="col-md-1">
+      <div class="text-center">
+        <div>
+          <a href="{% url 'problems:delete_solution' problem.id solution.id%}">
+            <img src="{% static "images/delete-black-2x.png" %}" alt="Delete"/>
+          </a>
+        </div>
+        Delete
+      </div>
+    </div>
+  </div>
+  {% endif %}
+  
    <div class="row pad-top-20">
     <div class="col-md-2 text-right">
       <b>Submitted By</b>
@@ -42,9 +67,9 @@
       </a>
 
     </div>
-  </div>
 
-  <form action="{% url 'problems:add_new_comment' problem.id solution.id %}" method="post" class="form-horizontal" autocomplete="off">
+
+  <form action="{% url 'problems:add_comment_to_solution' problem.id solution.id %}" method="post" class="form-horizontal" autocomplete="off">
     {% csrf_token %}
     <div class="form-group">
       <label for="id_content" class="col-md-2 control-label">Comment</label>
@@ -59,7 +84,6 @@
       </div>
     </div>
   </form>
-
 {% for comment in comments_list %}
   <div class="row pad-top-20">
     <div class="col-md-2 text-right">
@@ -68,7 +92,7 @@
       </a>
       <p>
       {% if comment.user.email == user_email %}
-        <a href="{% url 'problems:edit_comment' problem.id solution.id comment.id %}">Edit</a> | <a href="{% url 'problems:delete_comment' problem.id solution.id comment.id %}">Delete</a>
+        <a href="{% url 'problems:edit_comment_from_solution' problem.id solution.id comment.id %}">Edit</a> | <a href="{% url 'problems:delete_comment_from_solution' problem.id solution.id comment.id %}">Delete</a>
       {% endif %}
     </div>
     <div class="col-md-10">

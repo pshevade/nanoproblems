@@ -6,7 +6,7 @@ from .forms import CommentForm
 import bleach
 
 
-def createcomment(request):
+def new_comment(request):
     """ Create a comment based on request form.
         Return comment if successful.
         Redirect to errors if failture.
@@ -27,7 +27,7 @@ def createcomment(request):
 
 
 @is_authorized()
-def deletecomment(request, comment):
+def delete_comment(request, comment):
     """ Delete a given comment.
         Return False if not authorized.
     """
@@ -39,7 +39,7 @@ def deletecomment(request, comment):
 
 
 @is_authorized()
-def editcomment(request, comment):
+def edit_comment(request, comment):
     """ Edit a given comment.
         Return False if not authorized or if form errors.
     """
@@ -54,7 +54,7 @@ def editcomment(request, comment):
         return False
 
 
-def checkcommentexists(comment_id):
+def get_comment(comment_id):
     """ Check if a comment exists, raise 404 if not found. """
     try:
         comment = Comment.objects.get(pk=comment_id)

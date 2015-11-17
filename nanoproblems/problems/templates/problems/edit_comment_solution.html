@@ -12,13 +12,14 @@
 <body class="container">
   <div class="row pad-10 margin-top-20 highlight">
     <div class="col-md-12">
+      <a href="{% url 'problems:show_solution' problem_id solution_id%}">
         <img src="{% static "images/arrow-back-white-1x.png" %}" alt="Back to Problems"/>
         Cancel
       </a>
     </div>
   </div>
   <p>
-  <form action="{% url 'problems:edit_comment_from_problem' problem_id  comment.id %}" method="post" class="form-horizontal" autocomplete="off">
+  <form action="{% url 'problems:edit_comment_from_solution' problem_id solution_id comment.id %}" method="post" class="form-horizontal" autocomplete="off">
     {% csrf_token %}
 
     <div class="form-group">

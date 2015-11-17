@@ -12,21 +12,30 @@
 <body class="container">
   <div class="row pad-10 margin-top-20 highlight">
     <div class="col-md-12">
+      <a href="/problems/{{problem_id}}/show_solution/{{solution.id}}">
         <img src="{% static "images/arrow-back-white-1x.png" %}" alt="Back to Problems"/>
         Cancel
       </a>
     </div>
   </div>
   <p>
-  <form action="{% url 'problems:edit_comment_from_problem' problem_id  comment.id %}" method="post" class="form-horizontal" autocomplete="off">
+  <form action="{% url 'problems:edit_solution' problem_id solution.id %}" method="post" class="form-horizontal" autocomplete="off">
     {% csrf_token %}
 
-    <div class="form-group">
-      <label for="id_content" class="col-md-2 control-label">Content</label>
+    <div class="form-group pad-top-20">
+      <label for="id_title" class="col-md-2 control-label">Title</label>
       <div class="col-md-4">
-        <textarea name="content" id="id_content" class="form-control" rows="3" value="" required>{{comment.content}}</textarea>
+        <input name='title' id='id_title' type="text" class="form-control" value='{{solution.title}}' required>
       </div>
     </div>
+
+  <div class="form-group">
+      <label for="id_description" class="col-md-2 control-label">Description</label>
+      <div class="col-md-4">
+        <textarea class="form-control" id="id_description" name="description" rows="3" required>{{solution.description|safe}}</textarea>
+      </div>
+    </div>
+    
 
 
     <div class="form-group">

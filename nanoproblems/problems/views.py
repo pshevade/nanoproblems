@@ -8,11 +8,12 @@ from django.core import serializers
 from .models import Problem, Solution
 import logic
 from .forms import ProblemForm, SolutionForm
-from users.views import is_authenticated
+from users.logic import is_authenticated, is_authorized
 from users.models import User
 
 from comments.forms import CommentForm
 from comments.models import Comment
+import comments.logic as comments_logic
 
 import problems
 import json
@@ -34,17 +35,14 @@ def problems_list(request):
 @is_authenticated()
 def problem_detail(request, problem_id):
     """ Return the problem details by problem_id. """
-    try:
-        problem = Problem.objects.get(pk=problem_id)
-        problem.description = markdown.markdown(problem.description, extensions=['markdown.extensions.fenced_code'])
-        user = User.objects.get(email=request.session['email'])
-        solutions_list = Solution.objects.filter(problem=problem)# need to add a way to get all answers to all questions here...
-        comments_list = []
-        for comment in problem.comments.order_by('-posted'):
-            comment.content = markdown.markdown(comment.content, extensions=['markdown.extensions.fenced_code'])
-            comments_list.append(comment)
-    except Problem.DoesNotExist:
-        raise Http404("Project does not exist")
+    problem = logic.get_problem(problem_id)
+    user = User.objects.get(email=request.session['email'])
+    solutions_list = Solution.objects.filter(problem=problem)# need to add a way to get all answers to all questions here...
+    comments_list = []
+    for comment in problem.comments.order_by('-posted'):
+        comment.content = markdown.markdown(comment.content, extensions=['markdown.extensions.fenced_code'])
+        comments_list.append(comment)
+
     context = {'problem': problem, 'user_email': request.session['email'], 'solutions_list':solutions_list, 'comments_list': comments_list}
     return render(request, 'problems/problem_detail.html', context)
 
@@ -59,7 +57,6 @@ def new_problem(request):
     if request.method == "POST":
         # temp = json.loads(request.body)
         form = ProblemForm(request.POST)
-
         # check whether it's valid:
         if form.is_valid():
             problem = form.save(commit=False)
@@ -87,16 +84,16 @@ def new_problem(request):
 
 @is_authenticated()
 def new_solution(request, problem_id):
-    problem = Problem.objects.get(pk=problem_id)
+    problem = logic.get_problem(problem_id)
     if request.method == "POST":
         solution_form = SolutionForm(request.POST)
         if solution_form.is_valid():
             # print "The users line is: ", submission_form['members_list']
             solution = solution_form.save(commit=False)
-            solution.description = bleach.clean(solution.description, strip=True)
             solution.problem = problem
             user_profile = User.objects.get(email=request.session['email'])
             solution.user = user_profile
+            solution.description = bleach.clean(solution.description, strip=True)
             solution.save()
             return HttpResponseRedirect('/problems/' + str(problem_id))
         else:
@@ -108,29 +105,53 @@ def new_solution(request, problem_id):
 
 
 @is_authenticated()
-def add_comment_to_problem(request, problem_id):
-    # solution = Solution.objects.get(pk=solution_id)
-    problem = Problem.objects.get(pk=problem_id)
+def edit_solution(request, problem_id, solution_id):
+    print "inside edit_solution"
+    solution = logic.get_solution(solution_id)
     if request.method == 'POST':
-        logic.addcommentproblem(request, problem)
-    # problem.description = markdown.markdown(problem.description, extensions=['markdown.extensions.fenced_code'])
-    # comments_list = []
-    # for comment in problem.comments.order_by('-posted'):
-    #     comment.content = markdown.markdown(comment.content, extensions=['markdown.extensions.fenced_code'])
-    #     comments_list.append(comment)
-    # # return HttpResponseRedirect('/problems/'+str(problem_id))
-    # context = {'problem': problem, 'user_email': request.session['email'], 'solutions_list':solutions_list}
-    # return render(request, 'problems/problem_detail.html', )
-    return problem_detail(request, problem_id)
+        print "inside post"
+        logic.edit_solution(request, solution)
+        return HttpResponseRedirect('/problems/' + str(problem_id) + '/show_solution/' + str(solution_id))
+    else:
+        form = SolutionForm()
+        return render(request, 'problems/edit_solution.html', {'form': form, 'solution': solution, 'problem_id': problem_id})
+
+
+@is_authenticated()
+def delete_solution(request, problem_id, solution_id):
+    print "inside edit_solution"
+    solution = logic.get_solution(solution_id)
+    if request.method == 'POST':
+        print "inside post"
+        logic.delete_solution(request, solution)
+        return HttpResponseRedirect('/problems/' + str(problem_id))
+    else:
+        return render(request, 'problems/delete_solution.html', {'solution': solution, 'problem_id': problem_id})
+
+
+@is_authenticated()
+def show_solution(request, problem_id, solution_id):
+    print "problem_id is: ", problem_id
+    print "solution_id is: ", solution_id
+    context = logic.get_solution_details(request, problem_id, solution_id)
+    return render(request, 'problems/show_solution.html', context)
+
+
+@is_authenticated()
+def add_comment_to_problem(request, problem_id):
+    problem = logic.get_problem(problem_id)
+    if request.method == 'POST':
+        logic.new_comment_problem(request, problem)
+    return HttpResponseRedirect('/problems/' + str(problem_id))
 
 
 @is_authenticated()
 def edit_comment_from_problem(request, problem_id, comment_id):
-    # solution = Solution.objects.get(pk=solution_id)
-    problem = Problem.objects.get(pk=problem_id)
+    problem = logic.get_problem(problem_id)
+    comment = comments_logic.get_comment(comment_id)
     if request.method == 'POST':
-        logic.editcommentproblem(request, problem, comment_id)
-        problem_detail(request, problem_id)
+        comment = logic.edit_comment_problem(request, problem, comment_id)
+        return HttpResponseRedirect('/problems/' + str(problem_id))
     else:
         comment_form = CommentForm()
     return render(request, 'problems/edit_comment.html',
@@ -139,69 +160,41 @@ def edit_comment_from_problem(request, problem_id, comment_id):
 
 @is_authenticated()
 def delete_comment_from_problem(request, problem_id, comment_id):
+    print "inside delete_comment_from_problem"
     problem = Problem.objects.get(pk=problem_id)
+    if request.method == 'GET':
+        logic.delete_comment_problem(request, problem, comment_id)
+    #return problem_detail(request, problem_id)
+    return HttpResponseRedirect('/problems/' + str(problem_id))
+
+
+@is_authenticated()
+def add_comment_to_solution(request, problem_id, solution_id):
+    print "inside add_comment_to_solution"
+    solution = logic.get_solution(solution_id)
     if request.method == 'POST':
-        logic.deletecommentproblem(request, problem, comment_id)
-    problem_detail(request, problem_id)
+        print "request method is post!"
+        logic.new_comment_solution(request, solution)
+    print "sending to show_solution from add_comment_to_solution"
+    return HttpResponseRedirect('/problems/' + str(problem_id) + '/show_solution/' + str(solution_id))
 
 
 @is_authenticated()
-def show_solution(request, problem_id, solution_id):
-    problem = Problem.objects.get(pk=problem_id)
-    problem.description = markdown.markdown(problem.description, extensions=['markdown.extensions.fenced_code'])
-    solution = Solution.objects.get(pk=solution_id)
-    solution.description = markdown.markdown(solution.description, extransions=['markdown.extensions.fenced_code'])
-    comments_list = []
-    for comment in solution.comments.order_by('-posted'):
-        comment.content = markdown.markdown(comment.content, extensions=['markdown.extensions.fenced_code'])
-        comments_list.append(comment)
-    context = {'solution': solution, 'problem': problem, 'user_email': request.session['email'], 'comments_list':comments_list}
-    return render(request, 'problems/show_solution.html', context)
-
-
-# @is_authenticated()
-# def edit_comment(request, problem_id, solution_id, comment_id):
-#     solution = Solution.objects.get(pk=solution_id)
-#     try:
-#         comment = Comment.objects.get(pk=comment_id)
-#         if comment.user.email != request.session['email']:
-#             return HttpResponseRedirect('/problems/'+str(problem_id)+'/show_solution/'+str(solution_id))
-#     except Comment.DoesNotExist:
-#         raise Http404("Comment does not exist")
-#     if request.method == 'POST':
-#         comment_form = CommentForm(request.POST, instance=comment)
-#         if comment_form.is_valid():
-#             comment = comment_form.save(commit=False)
-#             comment.user = User.objects.get(email=request.session['email'])
-#             comment.save()
-#             solution.comments.add(comment)
-#             return HttpResponseRedirect('/problems/'+str(problem_id)+'/show_solution/'+str(solution_id))
-#         else:
-#             print comment_form.errors
-#     elif request.method == 'GET':
-#         c_edit = comment
-#         # c_edit.content = bleach.clean(c_edit.content, strip=True)
-#         comment_form = CommentForm(instance=c_edit)
-
-#         return render(request, 'problems/edit_comment.html',
-#                       {'form': comment_form, 'problem_id': problem_id, 'solution_id': solution_id, 'comment':comment})
-
-
-# @is_authenticated()
-# def delete_comment(request, problem_id, solution_id, comment_id):
-#     try:
-#         solution = Solution.objects.get(pk=solution_id)
-#         comment = Comment.objects.get(pk=comment_id)
-#         if comment.user.email != request.session['email']:
-#             return HttpResponseRedirect('/submissions/show/'+str(sub_id))
-#         solution.comments.remove(comment)
-#         comment.delete()
-
-#     except Comment.DoesNotExist:
-#         raise Http404("Comment does not exist")
-#     return HttpResponseRedirect('/problems/'+str(problem_id)+'/show_solution/'+str(solution_id))
+def edit_comment_from_solution(request, problem_id, solution_id, comment_id):
+    solution = logic.get_solution(solution_id)
+    comment = comments_logic.get_comment(comment_id)
+    if request.method == 'POST':
+        comment = logic.edit_comment_solution(request, solution, comment_id)
+        return HttpResponseRedirect('/problems/' + str(problem_id) + '/show_solution/' + str(solution_id))
+    else:
+        comment_form = CommentForm()
+    return render(request, 'problems/edit_comment_solution.html',
+                  {'form': comment_form, 'problem_id':problem_id, 'solution_id': solution_id, 'comment':comment})  
 
 
 @is_authenticated()
-def edit_problem(request, problem_id):
-    pass
+def delete_comment_from_solution(request, problem_id, solution_id, comment_id):
+    solution = logic.get_solution(solution_id)
+    if request.method == 'GET':
+        logic.delete_comment_solution(request, solution, comment_id)
+    return HttpResponseRedirect('/problems/' + str(problem_id) + '/show_solution/' + str(solution_id))
