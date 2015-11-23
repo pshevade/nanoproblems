@@ -8,7 +8,7 @@ from django.core import serializers
 from .models import Problem, Solution
 import logic
 from .forms import ProblemForm, SolutionForm
-from users.logic import is_authenticated, is_authorized
+from users.logic import is_authenticated, is_authorized, is_admin, get_true_if_admin
 from users.models import User
 
 from comments.forms import CommentForm
@@ -20,6 +20,7 @@ import json
 
 import bleach
 import markdown
+from datetime import datetime
 
 
 @is_authenticated()
@@ -35,15 +36,7 @@ def problems_list(request):
 @is_authenticated()
 def problem_detail(request, problem_id):
     """ Return the problem details by problem_id. """
-    problem = logic.get_problem(problem_id)
-    user = User.objects.get(email=request.session['email'])
-    solutions_list = Solution.objects.filter(problem=problem)# need to add a way to get all answers to all questions here...
-    comments_list = []
-    for comment in problem.comments.order_by('-posted'):
-        comment.content = markdown.markdown(comment.content, extensions=['markdown.extensions.fenced_code'])
-        comments_list.append(comment)
-
-    context = {'problem': problem, 'user_email': request.session['email'], 'solutions_list':solutions_list, 'comments_list': comments_list}
+    context = logic.get_problem_details(request, problem_id)
     return render(request, 'problems/problem_detail.html', context)
 
 
@@ -80,6 +73,21 @@ def new_problem(request):
         # Remove when front end updated.
         form = ProblemForm()
     return render(request, 'problems/new_problem.html', {'form': form})
+
+
+@is_admin()
+@is_authenticated()
+def mark_problem(request, problem_id):
+    problem = logic.get_problem(problem_id)
+    problem.marked = datetime.today()
+    problem.save()
+    return HttpResponseRedirect('/problems/' + str(problem_id))
+
+
+@is_admin()
+@is_authenticated()
+def problems_json(request):
+    return HttpResponse(logic.get_problems_json(), content_type='json')
 
 
 @is_authenticated()

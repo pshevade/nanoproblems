@@ -43,6 +43,9 @@ class Problem(models.Model):
     tags = models.ManyToManyField(Tag)
     # questions = models.ManyToManyField(Question)
     comments = models.ManyToManyField(Comment)
+    # marked is a date, when a problem is 'marked', we set the date to that date
+    # and the problem appears on featured list for a week after.
+    marked = models.DateField(default=None, null=True)
 
 
 class Solution(models.Model):

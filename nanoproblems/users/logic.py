@@ -9,6 +9,21 @@ from openid.extensions import ax, sreg
 from config import openid_settings
 
 
+def is_admin():
+    """ Decorator to check if the user is an admin. """
+    def decorator(func):
+        @wraps(func)
+        def wrapper(request, *args, **kwargs):
+            if 'email' in request.session:
+                if '@knowlabs.com' in request.session['email'] or '@udacity.com' in request.session['email']:
+                    return func(request, *args, **kwargs)
+                else:
+                    print "Not an admin!"
+                    return False
+        return wrapper
+    return decorator
+
+
 def is_authenticated():
     """ Decorator to check if user is authenticated """
     def decorator(func):
@@ -57,6 +72,11 @@ def logout_user(request):
         del request.session['nickname']
     except KeyError:
         print "KeyError: User info not in session."
+
+
+@is_admin()
+def get_true_if_admin(request):
+    return True
 
 
 def get_udacity_openid_url(request):

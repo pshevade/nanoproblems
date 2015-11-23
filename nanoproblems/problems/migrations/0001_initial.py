@@ -7,8 +7,8 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0001_initial'),
         ('comments', '0001_initial'),
+        ('users', '0001_initial'),
     ]
 
     operations = [
@@ -21,7 +21,8 @@ class Migration(migrations.Migration):
                 ('posted', models.DateField(auto_now_add=True)),
                 ('category', models.CharField(default=b'CHALLENGE', max_length=15, choices=[(b'INTERVIEW', b'Interview Problem'), (b'CHALLENGE', b'Challenge Problem'), (b'QUESTION', b'The "I-have-a" Problem'), (b'CONTEST', b'Contest')])),
                 ('difficulty', models.CharField(default=1, max_length=10, choices=[(b'EASY', b'Easy'), (b'MEDIUM', b'Medium'), (b'HARD', b'Hard')])),
-                ('questions', models.ManyToManyField(to='comments.Question')),
+                ('marked', models.DateField(default=None)),
+                ('comments', models.ManyToManyField(to='comments.Comment')),
             ],
         ),
         migrations.CreateModel(

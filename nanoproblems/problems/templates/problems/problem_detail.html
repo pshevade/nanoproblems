@@ -19,7 +19,7 @@
   </div>
   <div class="row">
     <div class="col-md-12">
-      <h2>{{problem.title}}</h2>
+      <h2>{{problem.title}} {% if problem.marked %}<img src="{% static 'images/star.png' %}">{% endif %}</h2>
       <div>
         Created by:
         <a href="{% url 'users:show' problem.user.user_key %}">
@@ -54,10 +54,9 @@
       </ul>
     </div>
   </div>
-
-  {% if user_email == problem.user.email %}
   <div class="row">
     <div class="col-md-offset-2 col-md-1">
+      {% if user_email == problem.user.email %}
       <div class="text-center">
         <div>
           <a href="">
@@ -66,9 +65,11 @@
         </div>
         Edit
       </div>
+      {% endif %}
     </div>
 
     <div class="col-md-1">
+      {% if user_email == problem.user.email %}
       <div class="text-center">
         <div>
           <a href="">
@@ -77,9 +78,22 @@
         </div>
         Delete
       </div>
+      {% endif %}
     </div>
-  </div>
+  
+  {% if markable and problem.marked == None %}
+    <div class="col-md-1">
+      <div class="text-center">
+        <div>
+          <a href="{% url 'problems:mark_problem' problem.id%}">
+            <img src="{% static "images/udacity-icon.png" %}" alt="Mark"/>
+          </a>
+        </div>
+        Udacious!
+      </div>
+    </div>
   {% endif %}
+  </div>
   <hr>
 
   <div class="row">
@@ -101,13 +115,13 @@
     {% endif %}
     </div>
   </div>
-  <hr>
+  
   <div class="row">
     <div class="col-md-12">
       <b><a href="{% url 'problems:new_solution' problem.id %}">Submit your solution</a></b>
     </div>
   </div>
-
+  <hr>
   <form action="{% url 'problems:add_comment_to_problem' problem.id %}" method="post" class="form-horizontal" autocomplete="off">
     {% csrf_token %}
     <div class="form-group">

@@ -1,10 +1,11 @@
-from users.logic import is_authorized
+from users.logic import is_authorized, get_true_if_admin
 from .models import Tag, Problem, Solution
 from .forms import SolutionForm
 import comments.logic as comments_logic
 import bleach
 from django.http import Http404
-
+from django.core import serializers
+import json
 
 import markdown
 
@@ -63,6 +64,7 @@ def delete_solution(request, solution):
         print e
         return False
 
+
 def get_solution(solution_id):
     try:
         solution = Solution.objects.get(pk=solution_id)
@@ -82,6 +84,36 @@ def get_problem(problem_id):
     except Problem.DoesNotExist:
         raise Http404("Project does not exist")
     return False
+
+
+def get_problems_json():
+    problems = Problem.objects.all()
+    for problem in problems:
+        problem.description = markdown.markdown(problem.description,
+                                                extensions=['markdown.extensions.fenced_code'])
+    problems_serialized = serializers.serialize('json',
+                                                problems,
+                                                fields=('title',
+                                                        'posted',
+                                                        'difficulty',
+                                                        'description',
+                                                        'tags',
+                                                        'user',
+                                                        'pk'),
+                                                use_natural_foreign_keys=True)
+    return json.dumps(problems_serialized)
+
+
+def get_problem_details(request, problem_id):
+    problem = get_problem(problem_id)
+    solutions_list = Solution.objects.filter(problem=problem)# need to add a way to get all answers to all questions here...
+    comments_list = []
+    for comment in problem.comments.order_by('-posted'):
+        comment.content = markdown.markdown(comment.content, extensions=['markdown.extensions.fenced_code'])
+        comments_list.append(comment)
+    markable = get_true_if_admin(request)
+    print "problem is marked on: ", problem.marked
+    return {'problem': problem, 'user_email': request.session['email'], 'solutions_list':solutions_list, 'comments_list': comments_list, 'markable':markable}
 
 
 def new_comment_problem(request, problem):
