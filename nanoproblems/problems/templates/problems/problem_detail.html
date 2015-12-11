@@ -70,6 +70,10 @@
   </div>
 
   <hr>
+  <div class="col-md-2" ng-controller="VoteController" ng-show="initVote({{problem.id}})">
+    <button type='submit' class="btn btn-success" ng-click="postVote(1)">[[likes]]<span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span></button>
+    <button type='submit' class='btn btn-danger' ng-click="postVote(2)">[[dislikes]]<span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span></button>
+  </div>
 
   <div class="row pad-10">
     <div class="col-md-12">

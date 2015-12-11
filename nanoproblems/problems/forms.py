@@ -9,10 +9,10 @@ class ProblemForm(ModelForm):
 
     class Meta:
         model = Problem
-        exclude = ('user', 'tags', 'questions', 'comments', 'marked')
+        exclude = ('user', 'tags', 'questions', 'comments', 'marked', 'likes', 'dislikes', 'like_vote_users', 'dislike_vote_users')
 
 
 class SolutionForm(ModelForm):
     class Meta:
         model = Solution
-        exclude = ('problem', 'user', 'comments',)
+        exclude = ('problem', 'user', 'comments', 'likes', 'dislikes', 'like_vote_users', 'dislike_vote_users')

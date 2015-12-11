@@ -1,5 +1,6 @@
 from users.logic import is_authorized, get_true_if_admin
 from .models import Tag, Problem, Solution
+from users.models import User
 from .forms import SolutionForm
 import comments.logic as comments_logic
 import bleach
@@ -86,6 +87,101 @@ def get_problem(problem_id):
     return False
 
 
+def vote_on_problem(request, problem, vote):
+
+    try:
+        user = User.objects.get(email=request.session['email'])
+    except User.DoesNotExist:
+        raise Http404("User does not exist")
+    user_in_likes = Problem.objects.filter(like_vote_users__email=user.email)\
+                                   .filter(id=problem.id)
+    user_in_dislikes = Problem.objects.filter(dislike_vote_users__email=user.email)\
+                                      .filter(id=problem.id)
+    if not user_in_likes and not user_in_dislikes:
+        # This is the first time the
+        if vote == '1':
+            problem.likes += 1
+            problem.like_vote_users.add(user)
+            problem.save()
+        elif vote == '2':
+            problem.dislikes += 1
+            problem.dislike_vote_users.add(user)
+            problem.save()
+    elif user_in_likes and not user_in_dislikes and vote == '2':
+        print "User: ", user.email, " is in the like list."
+        problem.dislikes += 1
+        problem.likes -= 1
+        problem.like_vote_users.remove(user)
+        problem.dislike_vote_users.add(user)
+        problem.save()
+    elif user_in_dislikes and not user_in_likes and vote == '1':
+        print "User: ", user.email, " is in the dislike list."
+        problem.likes += 1
+        problem.dislikes -= 1
+        problem.dislike_vote_users.remove(user)
+        problem.like_vote_users.add(user)
+        problem.save()
+    return problem
+
+
+def vote_on_solution(request, solution, vote):
+
+    try:
+        user = User.objects.get(email=request.session['email'])
+    except User.DoesNotExist:
+        raise Http404("User does not exist")
+    user_in_likes = Solution.objects.filter(sol_like_vote_users__email=user.email)\
+                                    .filter(id=solution.id)
+    user_in_dislikes = Solution.objects.filter(sol_dislike_vote_users__email=user.email)\
+                                       .filter(id=solution.id)
+    if not user_in_likes and not user_in_dislikes:
+        # This is the first time the
+        if vote == '1':
+            solution.likes += 1
+            solution.sol_like_vote_users.add(user)
+            solution.save()
+        elif vote == '2':
+            solution.dislikes += 1
+            solution.sol_dislike_vote_users.add(user)
+            solution.save()
+    elif user_in_likes and not user_in_dislikes and vote == '2':
+        print "User: ", user.email, " is in the like list."
+        solution.dislikes += 1
+        solution.likes -= 1
+        solution.sol_like_vote_users.remove(user)
+        solution.sol_dislike_vote_users.add(user)
+        solution.save()
+    elif user_in_dislikes and not user_in_likes and vote == '1':
+        print "User: ", user.email, " is in the dislike list."
+        solution.likes += 1
+        solution.dislikes -= 1
+        solution.sol_dislike_vote_users.remove(user)
+        solution.sol_like_vote_users.add(user)
+        solution.save()
+    return solution
+
+
+def get_problem_as_json(problem):
+    if problem:
+        problem.description = markdown.markdown(problem.description,
+                                                extensions=['markdown.extensions.fenced_code'])
+        problem_serialized = serializers.serialize('json',
+                                                   [problem],
+                                                   fields=('title',
+                                                           'posted',
+                                                           'difficulty',
+                                                           'description',
+                                                           'tags',
+                                                           'likes',
+                                                           'dislikes',
+                                                           'user',
+                                                           'pk'),
+                                                   use_natural_foreign_keys=True)
+        return json.dumps(problem_serialized)
+    else:
+        return None
+
+
 def get_problems_json():
     problems = Problem.objects.all()
     for problem in problems:
@@ -98,6 +194,8 @@ def get_problems_json():
                                                         'difficulty',
                                                         'description',
                                                         'tags',
+                                                        'likes',
+                                                        'dislikes',
                                                         'user',
                                                         'pk'),
                                                 use_natural_foreign_keys=True)
@@ -133,7 +231,7 @@ def edit_comment_problem(request, problem, comment_id):
     """ Edit comment.
     """
     comment = comments_logic.get_comment(comment_id)
-    # Return false if comment is not in this problem! 
+    # Return false if comment is not in this problem!
     if comment:
         if comment not in problem.comments.all():
             return False
@@ -176,7 +274,7 @@ def edit_comment_solution(request, solution, comment_id):
     """ Edit comment.
     """
     comment = comments_logic.get_comment(comment_id)
-    # Return false if comment is not in this problem! 
+    # Return false if comment is not in this problem!
     if comment:
         if comment not in solution.comments.all():
             return False

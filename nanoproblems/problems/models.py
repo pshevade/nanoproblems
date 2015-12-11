@@ -46,6 +46,11 @@ class Problem(models.Model):
     # marked is a date, when a problem is 'marked', we set the date to that date
     # and the problem appears on featured list for a week after.
     marked = models.DateField(default=None, null=True)
+    likes = models.IntegerField(default=0)
+    dislikes = models.IntegerField(default=0)
+    # store the user's id if the user has voted
+    like_vote_users = models.ManyToManyField(User, related_name='like_vote_users')
+    dislike_vote_users = models.ManyToManyField(User, related_name='dislike_vote_users')
 
 
 class Solution(models.Model):
@@ -56,3 +61,9 @@ class Solution(models.Model):
     description = models.TextField()
     posted = models.DateField(auto_now_add=True)
     comments = models.ManyToManyField(Comment)
+    likes = models.IntegerField(default=0)
+    dislikes = models.IntegerField(default=0)
+    # store the user's id if the user has voted
+    sol_like_vote_users = models.ManyToManyField(User, related_name='sol_like_vote_users')
+    sol_dislike_vote_users = models.ManyToManyField(User, related_name='sol_dislike_vote_users')
+

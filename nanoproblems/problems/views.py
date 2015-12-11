@@ -84,10 +84,25 @@ def mark_problem(request, problem_id):
     return HttpResponseRedirect('/problems/' + str(problem_id))
 
 
+@is_authenticated()
+def vote_problem(request, problem_id, vote):
+    print "Inside vote_problem for problem id: ", problem_id, "and vote: ", vote
+    problem = logic.get_problem(problem_id)
+    problem = logic.vote_on_problem(request, problem, vote)
+    # return HttpResponseRedirect('/problems/' + str(problem_id))
+    return HttpResponse(logic.get_problem_as_json(problem), content_type='application/json')
+
+
+@is_authenticated()
+def problem_as_json(request, problem_id):
+    return HttpResponse(logic.get_problem_as_json(logic.get_problem(problem_id)),
+                        content_type='application/json')
+
+
 @is_admin()
 @is_authenticated()
 def problems_json(request):
-    return HttpResponse(logic.get_problems_json(), content_type='json')
+    return HttpResponse(logic.get_problems_json(), content_type='application/json')
 
 
 @is_authenticated()
@@ -146,6 +161,13 @@ def show_solution(request, problem_id, solution_id):
 
 
 @is_authenticated()
+def vote_solution(request, problem_id, solution_id, vote=0):
+    solution = logic.get_solution(solution_id)
+    logic.vote_on_solution(solution, vote)
+    return HttpResponseRedirect('/problems/' + str(problem_id) + '/show_solution/' + str(solution_id))
+
+
+@is_authenticated()
 def add_comment_to_problem(request, problem_id):
     problem = logic.get_problem(problem_id)
     if request.method == 'POST':
@@ -163,7 +185,7 @@ def edit_comment_from_problem(request, problem_id, comment_id):
     else:
         comment_form = CommentForm()
     return render(request, 'problems/edit_comment.html',
-                  {'form': comment_form, 'problem_id': problem_id, 'comment':comment})  
+                  {'form': comment_form, 'problem_id': problem_id, 'comment':comment})
 
 
 @is_authenticated()
@@ -197,7 +219,7 @@ def edit_comment_from_solution(request, problem_id, solution_id, comment_id):
     else:
         comment_form = CommentForm()
     return render(request, 'problems/edit_comment_solution.html',
-                  {'form': comment_form, 'problem_id':problem_id, 'solution_id': solution_id, 'comment':comment})  
+                  {'form': comment_form, 'problem_id':problem_id, 'solution_id': solution_id, 'comment':comment})
 
 
 @is_authenticated()
