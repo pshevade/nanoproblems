@@ -6,3 +6,70 @@
 .option-title {
   padding: 0.25em 1em;
 }
+
+.option-icon {
+  position: relative;
+}
+
+.option-icon:after,
+.option-icon:before {
+  position: absolute;
+  transition: all 0.25s ease-in-out;
+}
+
+.submit-icon:after {
+  content: "\f105";
+  transform: translate(-1.4em, -0.9em);
+  opacity: 0;
+}
+
+.submit-icon:before {
+  transform: translate(0, -0.9em);
+}
+
+.submit-option:hover .submit-icon:after {
+  transform: translate(0, -0.9em);
+  opacity: 1;
+}
+
+.submit-option:hover .submit-icon:before {
+  transform: translate(1em, -0.9em);
+  opacity: 0;
+}
+
+.browse-icon {
+  position: relative;
+}
+
+.browse-icon:after {
+  content: "\f107";
+  transform: translate(0, -1.8em);
+  opacity: 0;
+}
+
+.browse-icon:before {
+  transform: translate(0, -0.9em);
+}
+
+.browse-option:hover .browse-icon:after {
+  transform: translate(0, -0.9em);
+  opacity: 1;
+}
+
+.browse-option:hover .browse-icon:before {
+  transform: translateY(0.4em);
+  opacity: 0;
+}
+
+.submit-text {
+  font-size: 1.05em;
+}
+
+.browse-text {
+  font-size: 1.05em;
+}
+
+.panel:hover {
+  cursor: pointer;
+  outline: 3px solid #294860;
+}
