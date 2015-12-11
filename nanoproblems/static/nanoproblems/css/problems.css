@@ -1,0 +1,70 @@
+.navbar {
+  margin-bottom: 0;
+}
+
+.nav-brand {
+  font: 700 small-caps 1.5em/0.8 "Open Sans", sans-serif;
+}
+
+.nav-item {
+  font: 700 1.1em "Open Sans", sans-serif;
+  text-align: center;
+}
+
+.user-welcome {
+  font: 500 1.5em "Open Sans", sans-serif;
+}
+
+.jumbotron {
+  padding: 1em;
+  background-color: #fff;
+}
+
+.options-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.options {
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: space-around;
+}
+
+.option-title {
+  font: 400 1.8em "Open Sans", sans-serif;
+}
+
+.option-icon {
+  font-size: 0.75em;
+  color: #000;
+}
+
+.submit-icon {
+  padding-left: 0.5em;
+}
+
+.option-text,
+.option-text:hover,
+.option-text:visited {
+  text-decoration: none;
+  color: #000;
+}
+
+.browse-title {
+  font: 400 1.6em/2 "Open Sans", sans-serif;
+}
+
+.browse-icon {
+  padding-left: 0.5em;
+}
+
+.problems-container {
+  border-top: 1px solid #e7e7e7;
+  padding: 5em 0;
+  background-color: #f9f9f9;
+}
+
+.panel::before {
+
+}

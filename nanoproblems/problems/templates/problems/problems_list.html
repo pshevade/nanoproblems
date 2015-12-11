@@ -1,37 +1,59 @@
 {% extends "problems/base.html" %}
 {% block content %}
   {% load staticfiles %}
-  <div class="row pad-10">
-    <!-- <div class="col-md-1"></div> -->
-    <div class="col-md-12">
-      <h1>More problems to practice!</h1>
-   </div>
-  </div>
 
-  <div class="row pad-10">
-    <!-- <div class="col-md-1"></div> -->
-    <div class="col-md-12">
-      Welcome, <a href="{% url 'users:show' user.user_key %}">{{ user.nickname }}</a>
+  <div class="container">
+
+    <div class="jumbotron">
+      <div class="container">
+        <div class="row">
+          <div class="col-xs-12">
+            <h3 class="user-welcome"> Welcome, <a href="{% url 'users:show' user.user_key %}">{{ user.nickname }}</a> </h3>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="options-container">
+              <div class="options">
+                <h2 class="add-option option-title">
+                  <a class="add-text option-text" href="{% url 'problems:new_problem' %}">Submit a Problem<i class="fa fa-angle-right option-icon submit-icon"></i></a>
+                </h2>
+                <h2 class="option-title">
+                  <a href="#problems" class="browse-text option-text">or Browse<i class="fa fa-angle-down option-icon browse-icon"></i></a>
+                </h2>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-  <div class="row pad-10">
-  <div class="col-md-9">
-      {% for problem in latest_problems_list %}
-      <div class="panel panel-default">
-        <div class="panel-body">
-        <a href="{% url 'problems:problem_detail' problem.id%}">{{problem.title}}</a>
-       </div>
+
+  <div class="problems-container" id="problems">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+            {% for problem in latest_problems_list %}
+            <div class="panel panel-default">
+              <div class="panel-body">
+              <a href="{% url 'problems:problem_detail' problem.id%}">{{problem.title}}</a>
+             </div>
+            </div>
+          {% endfor %}
+        </div>
       </div>
-    {% endfor %}
+    </div>
   </div>
-  </div>
-  <div class="row pad-10">
-  <div class="col-md-9">
-    <a href="{% url 'problems:new_problem' %}">
-      <img src="{% static "images/add-circle-1x.png" %}" alt="Create Problem"/>
-      &nbspCreate Problem
-    </a>
-  </div>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <a href="{% url 'problems:new_problem' %}">
+          <img src="{% static "images/add-circle-1x.png" %}" alt="Create Problem"/>
+          &nbspCreate Problem
+        </a>
+      </div>
+    </div>
   </div>
 
 {% endblock %}

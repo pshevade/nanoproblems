@@ -1,0 +1,8 @@
+.options {
+  flex-flow: row wrap;
+  justify-content: space-around;
+}
+
+.option-title {
+  padding: 0.25em 1em;
+}
