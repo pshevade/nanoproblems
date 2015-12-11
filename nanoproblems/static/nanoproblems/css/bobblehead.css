@@ -1,3 +1,7 @@
+*{
+  font: "Open Sans", sans-serif;
+}
+
 .flex {
   display:flex;
 }
@@ -13,10 +17,12 @@
 
 .pad-top-20 {
   padding-top: 20px;
+  padding-left:15px;
 }
 .pad-10 {
   padding-top: 10px;
   padding-bottom: 10px;
+  padding-left: 15px;
 }
 
 .on-top {
