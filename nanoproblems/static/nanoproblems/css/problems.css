@@ -12,7 +12,7 @@
 }
 
 .user-welcome {
-  font: 500 2em "Open Sans", sans-serif;
+  font: 500 1.5em "Open Sans", sans-serif;
 }
 
 .nickname {
@@ -26,7 +26,7 @@
 }
 
 .options-container {
-  max-width: 575px;
+  max-width: 750px;
   margin: 0 auto;
 }
 
@@ -37,7 +37,7 @@
 }
 
 .option-title {
-  font: 400 1.5em "Open Sans", sans-serif;
+  font: 400 small-caps 1.5em "Open Sans", sans-serif;
   letter-spacing: 0.05em;
   padding: 0.5em 0.25em;
 }
@@ -79,7 +79,7 @@
 }
 
 .browse-title {
-  font: 400 1.25em/2 "Open Sans", sans-serif;
+  font: 400 small-caps 1.25em/2 "Open Sans", sans-serif;
   letter-spacing: 0.05em;
 }
 
@@ -92,13 +92,6 @@
 }
 
 .problems-container {
-  border-top: 1px solid #e7e7e7;
-  padding: 1em 0;
-  background-color: #f9f9f9;
-}
-
-.problems-container .container {
-  padding: 3em 0 1em;
   max-width: 870px;
 }
 
@@ -108,9 +101,12 @@
 }
 
 .panel {
-  outline: 1px solid #294860;
+  border-top: 1px solid #e7e7e7;
+  border-bottom: 1px solid #e7e7e7;
+  border-left: none;
+  border-right: none;
   min-height: 5em;
-  transition: outline 0.4s ease-in-out;
+  transition: border-color 0.4s ease-in-out;
 }
 
 .panel:before {

@@ -1,6 +1,20 @@
-.options {
-  flex-flow: row wrap;
-  justify-content: space-around;
+@media screen and (min-width:600px) {
+}
+
+@media screen and (min-width:900px) {
+  .jumbotron {
+    text-align: left;
+  }
+
+  .options {
+    text-align: right;
+    flex-flow: row wrap;
+    justify-content: flex-end;
+  }
+}
+
+.options-container {
+  margin: 0 0 0 auto;
 }
 
 .option-title {
@@ -37,6 +51,10 @@
   opacity: 0;
 }
 
+.option-title, .browse-title {
+  font-size: 1.25em;
+}
+
 .browse-icon {
   position: relative;
 }
@@ -61,15 +79,7 @@
   opacity: 0;
 }
 
-.submit-text {
-  font-size: 1.05em;
-}
-
-.browse-text {
-  font-size: 1.05em;
-}
-
 .panel:hover {
   cursor: pointer;
-  outline: 3px solid #294860;
+  border-color: #294860;
 }
