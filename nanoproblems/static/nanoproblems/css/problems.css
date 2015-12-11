@@ -1,0 +1,122 @@
+.navbar {
+  margin-bottom: 0;
+}
+
+.nav-brand {
+  font: 700 small-caps 1.5em/0.8 "Open Sans", sans-serif;
+}
+
+.nav-item {
+  font: 700 1.1em "Open Sans", sans-serif;
+  text-align: center;
+}
+
+.user-welcome {
+  font: 500 2em "Open Sans", sans-serif;
+}
+
+.nickname {
+  font-variant: small-caps;
+  letter-spacing: 0.05em;
+}
+
+.jumbotron {
+  padding: 0 1em;
+  background-color: #fff;
+}
+
+.options-container {
+  max-width: 575px;
+  margin: 0 auto;
+}
+
+.options {
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: space-around;
+}
+
+.option-title {
+  font: 400 1.5em "Open Sans", sans-serif;
+  letter-spacing: 0.05em;
+  padding: 0.5em 0.25em;
+}
+
+.option-icon {
+  font-size: 1em;
+  line-height: 1.25em;
+  color: #000;
+}
+
+.submit-option {
+  border: 1px solid #294860;
+  border-radius: 3px;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.submit-option:hover,
+.submit-option:focus {
+  background-color: #294860;
+}
+
+.submit-option:hover .submit-text,
+.submit-option:focus .submit-text,
+.submit-option:hover .submit-icon,
+.submit-option:focus .submit-icon {
+  color: #fff;
+}
+
+.submit-icon {
+  padding-left: 0.5em;
+}
+
+.option-text,
+.option-text:hover,
+.option-text:visited {
+  text-decoration: none;
+  color: #333;
+  font-weight: 600;
+}
+
+.browse-title {
+  font: 400 1.25em/2 "Open Sans", sans-serif;
+  letter-spacing: 0.05em;
+}
+
+.browse-text {
+  font-weight: 600;
+}
+
+.browse-icon {
+  padding-left: 0.5em;
+}
+
+.problems-container {
+  border-top: 1px solid #e7e7e7;
+  padding: 1em 0;
+  background-color: #f9f9f9;
+}
+
+.problems-container .container {
+  padding: 3em 0 1em;
+  max-width: 870px;
+}
+
+.question-link {
+  display: block;
+  height: 100%;
+}
+
+.panel {
+  outline: 1px solid #294860;
+  min-height: 5em;
+  transition: outline 0.4s ease-in-out;
+}
+
+.panel:before {
+  content: "";
+}
+
+.problem-title {
+  font: small-caps 1.5em "Open Sans", sans-serif;
+}

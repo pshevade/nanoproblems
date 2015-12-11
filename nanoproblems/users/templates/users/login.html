@@ -5,8 +5,6 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
-  <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
   {% load staticfiles %}
   <link rel="stylesheet" href="{% static "css/login.css" %}"/>
 </head>
@@ -65,13 +63,14 @@
       <div class="about-col col-xs-12 col-sm-6">
         <aside class="about">
           <h3 class="about-title" id="getStarted">Getting Started</h3>
-          <p class="about-text">Want to keep practicing skills? Get explainations while trying out answer particular question, from coaches, subject matter experts, and other students like yourself!</p>
+          <p class="about-text">Want to practice your new skills? Gain valuable coding and interview experience by solving curated problems from coaches, subject matter experts, and other students like yourself!</p>
         </aside>
       </div>
     </div>
   </div>
 
   <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
   <script>
     var lastScrollTop = 0;
     var delta = 5;
@@ -139,7 +138,18 @@
         $('.nav').toggleClass('collapsed');
       });
     });
-    </script>
+  </script>
+  <script>
+    var cb = function() {
+      var l = document.createElement('link'); l.rel = 'stylesheet';
+      l.href = 'https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,600,700,800,300';
+      var h = document.getElementsByTagName('head')[0]; h.parentNode.insertBefore(l, h);
+    };
+    var raf = requestAnimationFrame || mozRequestAnimationFrame ||
+        webkitRequestAnimationFrame || msRequestAnimationFrame;
+    if (raf) raf(cb);
+    else window.addEventListener('load', cb);
+  </script>
 
 </body>
 </html>
