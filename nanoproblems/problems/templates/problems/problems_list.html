@@ -1,37 +1,83 @@
 {% extends "problems/base.html" %}
 {% block content %}
   {% load staticfiles %}
-  <div class="row pad-10">
-    <!-- <div class="col-md-1"></div> -->
-    <div class="col-md-12">
-      <h1>More problems to practice!</h1>
-   </div>
-  </div>
 
-  <div class="row pad-10">
-    <!-- <div class="col-md-1"></div> -->
-    <div class="col-md-12">
-      Welcome, <a href="{% url 'users:show' user.user_key %}">{{ user.nickname }}</a>
+  <section class="jumbotron-section">
+    <div class="container">
+      <div class="jumbotron">
+        <div class="fluid-container">
+          <div class="row">
+            <div class="col-xs-12">
+              <h3 class="user-welcome"> Welcome, <a class="nickname" href="{% url 'users:show' user.user_key %}">{{ user.nickname }}</a> </h3>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="options-container">
+                <div class="options">
+                  <h2 class="submit-option option-title">
+                    <a class="submit-text option-text" href="{% url 'problems:new_problem' %}">Submit a problem<i class="fa fa-angle-right option-icon submit-icon"></i></a>
+                  </h2>
+                  <h2 class="browse-option option-title">
+                    <span class="browse-text option-text">or start browsing<i class="fa fa-angle-down option-icon browse-icon"></i></span>
+                  </h2>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="problems-container" id="problems">
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12">
+          {% for problem in latest_problems_list %}
+            <div class="panel panel-default text-left">
+              <a class="question-link" href="{% url 'problems:problem_detail' problem.id%}">
+                <div class="panel-body">
+                  <div class="row">
+                    <div class="col-xs-12">
+                      <a href="{% url 'problems:problem_detail' problem.id%}">
+                        <h4 class="problem-title">{{problem.title}}</h4>
+                      </a>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-12">
+                      {{ problem.description }}
+                    </div>
+                  </div>
+                  <div class="row">
+                    {% if problem.tags != problems.Tag.None %}
+                      <div class="col-xs-12 col-md-6">
+                        {{ problem.tags }}
+                      </div>
+                    {% endif %}
+                    <div class="col-xs-12 col-md-6 text-right">
+                      {{ problem.difficulty }}
+                    </div>
+                  </div>
+               </div>
+              </a>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
     </div>
   </div>
-  <div class="row pad-10">
-  <div class="col-md-9">
-      {% for problem in latest_problems_list %}
-      <div class="panel panel-default">
-        <div class="panel-body">
-        <a href="{% url 'problems:problem_detail' problem.id%}">{{problem.title}}</a>
-       </div>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12">
+        <a href="{% url 'problems:new_problem' %}">
+          <img src="{% static "images/add-circle-1x.png" %}" alt="Create Problem"/>
+          &nbsp Submit a Problem
+        </a>
       </div>
-    {% endfor %}
-  </div>
-  </div>
-  <div class="row pad-10">
-  <div class="col-md-9">
-    <a href="{% url 'problems:new_problem' %}">
-      <img src="{% static "images/add-circle-1x.png" %}" alt="Create Problem"/>
-      &nbspCreate Problem
-    </a>
-  </div>
+    </div>
   </div>
 
 {% endblock %}
