@@ -4,82 +4,38 @@
 <head>
   <title>Nanoproblems</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
   {% load staticfiles %}
-  <link rel="stylesheet" type="text/css" href="{% static "css/bobblehead.css" %}"/>
+  <link rel="stylesheet" href="{% static "css/new-problem.css" %}"/>
+  <link rel="stylesheet" href="{% static "css/new-problem-lg.css" %}"/>
 </head>
 
-<body class="container">
-  <div class="row pad-10 margin-top-20 highlight">
-    <div class="col-md-12">
-      <a href="{% url 'problems:problems_list' %}">
-        <img src="{% static "images/arrow-back-white-1x.png" %}" alt="Back to Profile"/>
-        Cancel
-      </a>
-    </div>
-  </div>
+<body>
 
-  <form method="post" class="form-horizontal" ng-controller="FormController" autocomplete="off">
-    <h2 class="col-md-offset-2">Create new problem</h2>
-    {% csrf_token %}
-    {{form}}
-    <!-- <div class="form-group pad-top-20">
-      <label for="id_title" class="col-md-2 control-label">Title</label>
-      <div class="col-md-4">
-        <input type="text" class="form-control" ng-model="title" required>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label for="id_description" class="col-md-2 control-label">Instructions</label>
-      <div class="col-md-4">
-        <textarea class="form-control" rows="3" ng-model="description" placeholder="Instructions and objectives for this problem"required></textarea>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label for="difficulty" class="col-md-2 control-label">Difficulty</label>
-      <div class="col-md-4">
-        <select class="form-control" ng-model="difficulty" required>
-          <option value="EASY">Easy</option>
-          <option value="MEDIUM">Medium</option>
-          <option value="HARD">Hard</option>
-        </select>
-      </div>
-    </div>
-
-
-    <div class="form-group">
-      <label for="id_tags" class="col-md-2 control-label">Tags</label>
-      <div class="col-md-4">
-        <input type="text" class="form-control" id="id_tags" ng-keydown="checkKeyDown($event)" ng-blur="checkKeyDown($event)" ng-model="searchText" ng-change="search()" placeholder="Tags to help index and search"required>
-        <ul class="list-group">
-          <li ng-repeat="suggestions in suggestions | limitTo: 3" class="list-group-item" ng-class="{active: selectedIndex === $index}">
-            {% verbatim %}
-              {{ suggestions }}
-            {% endverbatim %}
-          </li>
-        </ul>
-        <div ng-repeat="selectedTag in selectedTags" class="inline">
-          {% verbatim %}
-            {{ selectedTag }} <a ng-click="removeTag($index)" class="badge">x</a> &nbsp &nbsp
-          {% endverbatim %}
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <div class="row cancel">
+          <div class="col-xs-12">
+            <a class="navbar-brand nav-brand" href="{% url 'problems:problems_list' %}"><i class="fa fa-reply cancel-icon"></i>cancel</a>
+          </div>
         </div>
       </div>
-      <div class="col-md-6 gray-text">
-        Press ENTER to add a new tag or TAB to autocomplete
-      </div>
-    </div>-->
+    </div>
+  </nav>
 
-    <div class="form-group">
-      <div class="col-md-offset-2 col-md-4">
-        <button type="submit" class="btn btn-default" ng-click="submit()">Submit</button>
-      </div>
-    </div> 
-  </form>
+  <div class="container">
 
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
-  <script src="{% static "js/newProblem.js" %}"></script>
+    <form method="post" class="new-form" autocomplete="off">
+      <h2 class="add-title">Submit a New Problem</h2>
+      {% csrf_token %}
+      {{ form }}
+
+      <button type="submit" class="btn btn-default submit-btn" ng-click="submit()">Submit</button>
+    </form>
+
+  </div>
 
 </body>
 </html>
