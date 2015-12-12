@@ -15,7 +15,10 @@
 	app.controller("VoteController", function($scope, VoteService){
         $scope.likes = 0;
         $scope.dislikes = 0;
+        $scope.solution_likes = 0;
+        $scope.solution_dislikes = 0;
         $scope.problem_id = -1;
+        $scope.solution_id = -1;
 
 
         /* getVotes */
@@ -29,13 +32,33 @@
             });
         };
 
+        $scope.getSolutionVote = function() {
+            console.log("Inside getSolutionVote, and the solution_id is: ", $scope.solution_id)
+            VoteService.getSolutionVotes($scope.solution_id).then(function(dataResponse){
+                $scope.solution_likes = JSON.parse(dataResponse.data)[0].fields.likes
+                $scope.solution_dislikes = JSON.parse(dataResponse.data)[0].fields.dislikes
+                // $scope.likes = dataResponse.data.Item.likes;
+                // $scope.dislikes = dataResponse.data.Item.dislikes;
+            });
+        };
+
         $scope.postVote = function(vote) {
             console.log("inside postvote")
-            VoteService.postMenuItemVote($scope.problem_id, vote).then(function(dataResponse){
+            VoteService.postProblemVote($scope.problem_id, vote).then(function(dataResponse){
                 console.log("We posted!")
                 console.log("here is the response: ", dataResponse.data)
             	$scope.likes = JSON.parse(dataResponse.data)[0].fields.likes
                 $scope.dislikes = JSON.parse(dataResponse.data)[0].fields.dislikes
+            })
+        };
+
+        $scope.postSolutionVote = function(vote) {
+            console.log("inside postsolutionvote")
+            VoteService.postSolutionVote($scope.problem_id, $scope.solution_id, vote).then(function(dataResponse){
+                console.log("We posted!")
+                console.log("here is the response: ", dataResponse.data)
+            	$scope.solution_likes = JSON.parse(dataResponse.data)[0].fields.likes
+                $scope.solution_dislikes = JSON.parse(dataResponse.data)[0].fields.dislikes
             })
         };
 
@@ -49,6 +72,18 @@
 
         };
 
+        $scope.initSolutionVote = function(problem_id, solution_id){
+        	console.log("init solution vote! the problem id is: ", solution_id)
+        	console.log("init solution vote! the solution id is: ", problem_id)
+            if ($scope.solution_id == -1) {
+                $scope.solution_id = solution_id
+                $scope.getSolutionVote()
+            };
+            if ($scope.problem_id == -1) {
+                $scope.problem_id = problem_id
+            };
+            return true;
+        };
 
     });
 
@@ -66,8 +101,17 @@
             });
         }
 
+       	this.getSolutionVotes = function(solution_id){
+       		solution_votes_url = '/problems/solutions_json/' + solution_id;
+       		return $http({
+       			method	: 'GET',
+       			url 	: solution_votes_url,
+       			headers : {'Content-Type': 'application/json'},
+       		})
 
-        this.postMenuItemVote = function(problem_id, vote) {
+       	}
+
+        this.postProblemVote = function(problem_id, vote) {
             problem_votes_url = '/problems/' + problem_id +'/vote/'+vote;
             console.log("Sending HTTP req to ", problem_votes_url);
             return $http({
@@ -77,6 +121,177 @@
                 headers : {'Content-Type': 'application/json; charset=utf-8'},
             });
         };
+
+        this.postSolutionVote = function(problem_id, solution_id, vote) {
+            solution_votes_url = '/problems/' + problem_id +'/show_solution/'+ solution_id + '/vote/' + vote;
+            console.log("Sending HTTP req to ", solution_votes_url);
+            return $http({
+                method  : 'POST',
+                url     : solution_votes_url,
+                data    : vote,
+                headers : {'Content-Type': 'application/json; charset=utf-8'},
+            });
+        };
     });
+
+///
+
+app.controller('FormController', ['$scope', '$http', '$window', function($scope, $http, $window){
+		// Set defaults where necessary
+		$scope.difficulty = 'EASY';
+
+    $scope.tags = []
+    var problemData = JSON.parse(sessionStorage.getItem('problems'));
+    problemData.forEach(getData);
+    function getData(allData) {
+      allData.fields.tags.forEach(getTags);
+      function getTags(tag) {
+        if ($scope.tags.indexOf(tag) == -1) {
+          $scope.tags.push(tag);
+        }
+      }
+    }
+
+    $scope.searchText = '';
+    $scope.suggestions = [];
+		$scope.selectedTags = [];
+		$scope.selectedIndex = 0;
+
+    $scope.search = function() {
+			if ($scope.searchText) {
+				searchText = $scope.searchText.toLowerCase();
+			} else {
+				searchText = $scope.searchText;
+			}
+
+      $scope.suggestions.length = 0;
+			$scope.tags.forEach(suggest);
+			function suggest(value) {
+				var value = value.toLowerCase();
+				if (value.indexOf($scope.searchText) === 0 && $scope.searchText.length > 0 && $scope.suggestions.indexOf(value) === -1) {
+					$scope.suggestions.push(value);
+				}
+			}
+			$scope.selectedIndex = 0;
+		}
+
+    $scope.checkKeyDown = function(event) {
+			if (event.keyCode === 40) { //down key, increment selectedIndex
+				event.preventDefault();
+				if ($scope.selectedIndex+1 !== $scope.suggestions.length) {
+					$scope.selectedIndex++;
+				}
+			}
+			else if (event.keyCode === 38) { //up key, decrement selectedIndex
+				event.preventDefault();
+				if ($scope.selectedIndex-1 !== -1) {
+					$scope.selectedIndex--;
+				}
+			}
+			else if (event.keyCode === 9) { //Tab (9) pressed
+				if ($scope.searchText.length > 0) {
+					event.preventDefault();
+					$scope.addToSelectedTags($scope.selectedIndex);
+					$scope.searchText = '';
+					$scope.search();
+				}
+			}
+      else if (event.keyCode === 13 || event.type == "blur") { // Enter (13) pressed
+        if ($scope.searchText.length > 0) {
+					event.preventDefault();
+          $scope.pushToSelectedTags($scope.searchText); // Force add raw data, not suggestion
+          $scope.searchText = '';
+					$scope.search();
+        }
+      }
+		}
+
+    $scope.addToSelectedTags = function(index) {
+			if ($scope.suggestions.length > 0) {
+				if ($scope.selectedTags.indexOf($scope.suggestions[index]) == -1) {
+					$scope.selectedTags.push($scope.suggestions[index]);
+				}
+			}
+			else {
+				if ($scope.selectedTags.indexOf($scope.searchText) == -1 && $scope.searchText !== '') {
+					$scope.selectedTags.push($scope.searchText);
+				}
+			}
+		}
+    $scope.pushToSelectedTags = function(tag) {
+      $scope.selectedTags.push(tag);
+    }
+
+    $scope.removeTag = function(index) {
+			$scope.selectedTags.splice(index, 1);
+		}
+
+    // Submit function
+		$scope.submit = function() {
+			// Define required fields
+			var required = [$scope.title, $scope.difficulty, $scope.description, $scope.selectedTags];
+			// Set counter to check each required field actually contains data
+			var allDataPresent = '0';
+      required.forEach(checkData);
+			// Check that all the required fields contain data
+			function checkData(value) {
+				if (value && value.length > 0) {
+					allDataPresent++;
+				}
+			}
+			// If all required fields contain data, then submit
+
+			if (allDataPresent == required.length) {
+        document.getElementById('id_tags').required = false;
+        document.getElementById('id_articles').required = false;
+
+        var tagString = arrayToCSV($scope.selectedTags);
+        var articleString = arrayToCSV($scope.articles);
+
+        function arrayToCSV(array) {
+          var temp = '';
+          array.forEach(toCSV);
+          function toCSV(value, index) {
+            if (index == 0) {
+              temp = value;
+            } else {
+              temp = temp + ',' + value;
+            }
+          }
+          return temp;
+        }
+
+				// Payload for POST request
+				//$scope.description = encodeURIComponent($scope.description)
+				$scope.description_escaped = $scope.description.replace(/\\n/g, "\\n")
+                                      						   .replace(/\\'/g, "\\'")
+						                                       .replace(/\\"/g, '\\"')
+						                                       .replace(/\\&/g, "\\&")
+						                                       .replace(/\\r/g, "\\r")
+						                                       .replace(/\\t/g, "\\t")
+						                                       .replace(/\\b/g, "\\b")
+						                                       .replace(/\\f/g, "\\f");
+				var payload = {
+					'title': $scope.title,
+					'difficulty': $scope.difficulty,
+					'description': $scope.description_escaped,
+					'tags_list': tagString,
+				};
+
+        // POST request to submit data
+				$http.post('/problems/create_problem/', payload, {"Content-Type": "application/json; charset=utf-8"}).
+					then (function(response) {
+            $http.get('/problems/problems_JSON/').then(function(problemResponse){
+              sessionStorage.removeItem('problems');
+        			var data = JSON.parse(JSON.parse(problemResponse.data));
+        			sessionStorage.setItem('problems', JSON.stringify(data));
+              // console.log(JSON.stringify(data.data, null, 2));
+              $window.location.href = '/problems/' + response.data;
+            });
+          });
+      }
+    }
+  }]);
+
 
 })();

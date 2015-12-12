@@ -1,106 +1,110 @@
-<html>
-<head>
-  <title>Nanoproblems</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"/>
+{% extends "problems/base.html" %}
+{% block content %}
   {% load staticfiles %}
-  <link rel="stylesheet" type="text/css" href="{% static "css/bobblehead.css" %}"/>
-</head>
-
-<body class="container">
-	<div class="row pad-10 margin-top-20 highlight">
-		<div class="col-md-12">
-      <a href="{% url 'problems:problem_detail' problem.id %}">
-        <img src="{% static "images/arrow-back-white-1x.png" %}" alt="Back to Problem"/>
-        Back
-			</a>
-		</div>
-	</div>
-
-  <div class="row">
-    <div class="col-md-12">
-      <h2>{{solution.problem.title}}</h2>
-    </div>
-  </div>
-
-  <div class="row pad-top-20">
-    <div class="col-md-2 text-right">
-      <b>Description</b>
-    </div>
-    <div class="col-md-10">
-      {{ solution.description|safe}}
-    </div>
-  </div>
-  {% if user_email == problem.user.email %}
-  <div class="row">
-    <div class="col-md-offset-2 col-md-1">
-      <div class="text-center">
-        <div>
-          <a href="{% url 'problems:edit_solution' problem.id solution.id%}">
-            <img src="{% static "images/edit-black-2x.png" %}" alt="Edit"/>
-          </a>
+  <section class="jumbotron-section">
+    <div class="container">
+      <div class="jumbotron">
+        <div class="fluid-container">
+          <div class="row">
+            <div class="col-xs-12">
+            <h2>
+            <a href="{% url 'problems:problem_detail' problem_id=solution.problem.id %}">{{solution.problem.title}} </a> > {{solution.title}}
+            {% if user_email == solution.user.email %}
+                  <a href=""><img src="{% static "images/edit-black-1x.png" %}" alt="Edit"/>
+                  </a>
+                  <a href=""><img src="{% static "images/delete-black-1x.png" %}" alt="Delete"/>
+                  </a>
+                {% endif %}
+            </h2>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="problem-description">
+              <hr>
+            </div>
+          </div>
+          <div class="row">
+            <p>
+              Created by:
+              <a href="{% url 'users:show' problem.user.user_key %}">
+                {{solution.user}}
+              </a>
+            </p>
+          </div>
+          <div class="row">
+            <p>
+              Posted: {{solution.posted}}
+            </p>
+          </div>
+          <div class="row">
+            <p>{{ solution.description|safe}}</p>
+          </div>
+          <div class="row" ng-controller="VoteController" ng-show="initSolutionVote({{solution.problem.id}}, {{solution.id}})">
+            <button type='submit' class="btn btn-success" ng-click="postSolutionVote(1)">[[solution_likes]]<span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span></button>
+            <button type='submit' class='btn btn-danger' ng-click="postSolutionVote(2)">[[solution_dislikes]]<span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span></button>
+          </div>
         </div>
-        Edit
       </div>
     </div>
+  </div>
+</section>
 
-    <div class="col-md-1">
-      <div class="text-center">
-        <div>
-          <a href="{% url 'problems:delete_solution' problem.id solution.id%}">
-            <img src="{% static "images/delete-black-2x.png" %}" alt="Delete"/>
-          </a>
+<div class="container" id="comments">
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12">
+          <h4>Comments</h4>
         </div>
-        Delete
+      </div>
+      <div class="panel panel-no-outline text-left">
+        <div class="panel-body" style="border=0">
+        <div class="row">
+          <form action="{% url 'problems:add_comment_to_solution' problem.id solution.id %}" method="post" class="form-horizontal" autocomplete="off">
+            {% csrf_token %}
+            <div class="col-xs-12 col-md-2">
+              <p>Leave a comment</p>
+            </div>
+            <div class="col-xs-12 col-md-8">
+                <textarea class="form-control" id="id_content" name="content" rows='5' required></textarea>
+            </div>
+            <div class="col-xs-12 col-md-2 text-right">
+               <button type="submit" class="btn btn-default">Submit</button>
+            </div>
+            </form>
+          </div>
+          </div>
+        </div>
+          {% for comment in comments_list %}
+            <div class="panel panel-default text-left">
+              <div class="panel-body">
+                <div class="row">
+                  <div class="col-xs-12">
+                    {{comment.content|safe}}
+                  </div>
+                  <div class="col-xs-12">
+                    <em>{{comment.posted}}</em>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12 col-md-6">
+                    <a href="{% url 'users:show' comment.user.user_key %}">
+                      {{ comment.user.nickname }}
+                    </a>
+                  </div>
+                  <div class="col-xs-12 col-md-6 text-right">
+                    {% if comment.user.email == user_email %}
+                      <a href="{% url 'problems:edit_comment_from_problem' problem.id comment.id %}">Edit</a> | <a href="{% url 'problems:delete_comment_from_problem' problem.id comment.id %}">Delete</a>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
       </div>
     </div>
   </div>
-  {% endif %}
-  
-   <div class="row pad-top-20">
-    <div class="col-md-2 text-right">
-      <b>Submitted By</b>
-    </div>
-    <div class="col-md-10">
-      <a href="{% url 'users:show' solution.user.user_key %}">
-          {{ solution.user.nickname }}
-      </a>
-
-    </div>
 
 
-  <form action="{% url 'problems:add_comment_to_solution' problem.id solution.id %}" method="post" class="form-horizontal" autocomplete="off">
-    {% csrf_token %}
-    <div class="form-group">
-      <label for="id_content" class="col-md-2 control-label">Comment</label>
-      <div class="col-md-4">
-        <textarea class="form-control" id="id_content" name="content" rows="3" required></textarea>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <div class="col-md-offset-2 col-md-4">
-        <button type="submit" class="btn btn-default">Submit</button>
-      </div>
-    </div>
-  </form>
-{% for comment in comments_list %}
-  <div class="row pad-top-20">
-    <div class="col-md-2 text-right">
-      <a href="{% url 'users:show' comment.user.user_key %}">
-          {{ comment.user.nickname }}
-      </a>
-      <p>
-      {% if comment.user.email == user_email %}
-        <a href="{% url 'problems:edit_comment_from_solution' problem.id solution.id comment.id %}">Edit</a> | <a href="{% url 'problems:delete_comment_from_solution' problem.id solution.id comment.id %}">Delete</a>
-      {% endif %}
-    </div>
-    <div class="col-md-10">
-        <p>{{comment.content|safe}}</p>
-        <p><em>{{comment.posted}}</em></p>
-    </div>
-  </div>
-{% endfor %}
-
-</body>
-</html>
+{% endblock %}

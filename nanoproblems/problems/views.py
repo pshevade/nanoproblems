@@ -29,6 +29,9 @@ def problems_list(request):
     user = User.objects.get(email=request.session['email'])
     print "This is the signed in user we found: ", user.nickname, user.user_key
     latest_problems_list = Problem.objects.order_by('posted')[:10]
+    for problem in latest_problems_list:
+        problem.description = markdown.markdown(problem.description,
+                                                extensions=['markdown.extensions.fenced_code'])
     context = {'latest_problems_list': latest_problems_list, 'user': user}
     return render(request, 'problems/problems_list.html', context)
 
@@ -68,6 +71,7 @@ def new_problem(request):
             # return HttpResponse(str(problem.id))
             return HttpResponseRedirect('/problems/')
         else:
+            print "These are the problem errors! ", form.errors
             raise Http404("Form is not valid")
     else:
         # Remove when front end updated.
@@ -163,8 +167,20 @@ def show_solution(request, problem_id, solution_id):
 @is_authenticated()
 def vote_solution(request, problem_id, solution_id, vote=0):
     solution = logic.get_solution(solution_id)
-    logic.vote_on_solution(solution, vote)
-    return HttpResponseRedirect('/problems/' + str(problem_id) + '/show_solution/' + str(solution_id))
+    solution = logic.vote_on_solution(request, solution, vote)
+    return HttpResponse(logic.get_solution_as_json(solution), content_type='application/json')
+
+
+@is_authenticated()
+def solution_as_json(request, solution_id):
+    return HttpResponse(logic.get_solution_as_json(logic.get_solution(solution_id)),
+                        content_type='application/json')
+
+
+@is_admin()
+@is_authenticated()
+def solutions_json(request):
+    return HttpResponse(logic.get_solutions_json(), content_type='application/json')
 
 
 @is_authenticated()

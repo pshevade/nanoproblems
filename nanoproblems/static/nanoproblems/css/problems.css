@@ -113,6 +113,10 @@
   transition: outline 0.4s ease-in-out;
 }
 
+.panel-no-outline {
+  outline: 0px;
+}
+
 .panel:before {
   content: "";
 }

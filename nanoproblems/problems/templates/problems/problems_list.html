@@ -47,17 +47,26 @@
                   </div>
                   <div class="row">
                     <div class="col-xs-12">
-                      {{ problem.description }}
+                      {{ problem.description|safe }}
                     </div>
                   </div>
                   <div class="row">
-                    {% if problem.tags != problems.Tag.None %}
-                      <div class="col-xs-12 col-md-6">
-                        {{ problem.tags }}
-                      </div>
-                    {% endif %}
-                    <div class="col-xs-12 col-md-6 text-right">
+                    <div class="col-xs-12 col-md-6">
+                      <ul class="list-unstyled">
+                      {% for tag in problem.tags.all %}
+                          <li class="badge">{{tag.tag_name}}</li>
+                      {% endfor %}
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-12 col-md-6">
                       {{ problem.difficulty }}
+                    </div>
+
+                    <div class="col-xs-12 col-md-6 text-right">
+                        {{problem.likes}}&nbsp<span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span></button>&nbsp
+                      {{problem.dislikes}}&nbsp<span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span></button>
                     </div>
                   </div>
                </div>
@@ -69,15 +78,5 @@
     </div>
   </div>
 
-  <div class="container">
-    <div class="row">
-      <div class="col-xs-12">
-        <a href="{% url 'problems:new_problem' %}">
-          <img src="{% static "images/add-circle-1x.png" %}" alt="Create Problem"/>
-          &nbsp Submit a Problem
-        </a>
-      </div>
-    </div>
-  </div>
 
 {% endblock %}

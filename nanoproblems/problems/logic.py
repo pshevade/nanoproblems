@@ -206,6 +206,7 @@ def get_problem_details(request, problem_id):
     problem = get_problem(problem_id)
     solutions_list = Solution.objects.filter(problem=problem)# need to add a way to get all answers to all questions here...
     comments_list = []
+    print "The solutions list is: ", solutions_list
     for comment in problem.comments.order_by('-posted'):
         comment.content = markdown.markdown(comment.content, extensions=['markdown.extensions.fenced_code'])
         comments_list.append(comment)
@@ -298,3 +299,40 @@ def delete_comment_solution(request, solution, comment_id):
     else:
         print "something went wrong, couldn't find comment"
         return False
+
+
+def get_solution_as_json(solution):
+    if solution:
+        solution.description = markdown.markdown(solution.description,
+                                                 extensions=['markdown.extensions.fenced_code'])
+        solution_serialized = serializers.serialize('json',
+                                                    [solution],
+                                                    fields=('title',
+                                                            'posted',
+                                                            'description',
+                                                            'likes',
+                                                            'dislikes',
+                                                            'user',
+                                                            'pk'),
+                                                    use_natural_foreign_keys=True)
+        return json.dumps(solution_serialized)
+    else:
+        return None
+
+
+def get_solutions_json():
+    solutions = Solution.objects.all()
+    for solution in solutions:
+        solution.description = markdown.markdown(solution.description,
+                                                 extensions=['markdown.extensions.fenced_code'])
+    solutions_serialized = serializers.serialize('json',
+                                                 solutions,
+                                                 fields=('title',
+                                                         'posted',
+                                                         'description',
+                                                         'likes',
+                                                         'dislikes',
+                                                         'user',
+                                                         'pk'),
+                                                 use_natural_foreign_keys=True)
+    return json.dumps(solutions_serialized)

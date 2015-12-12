@@ -1,137 +1,178 @@
 {% extends "problems/base.html" %}
 {% block content %}
   {% load staticfiles %}
-  <div class="row pad-top-20">
-    <div class="col-md-12">
-      <h3>{{problem.title}} {% if problem.marked %}<img src="{% static 'images/udacity-logo-small.png' %}">{% endif %}</h3>
-    </div>
-  </div>
-  <div class="row pad-10">
-    <div class="col-md-2">
-      {% if user_email == problem.user.email %}
-          <a href="">
-            <img src="{% static "images/edit-black-1x.png" %}" alt="Edit"/>
-          </a>
-          Edit
-          <a href="">
-            <img src="{% static "images/delete-black-1x.png" %}" alt="Delete"/>
-          </a>
-          Delete
-        {% endif %}
-      </div>
-
-  {% if markable and problem.marked == None %}
-    <div class="col-md-1">
-      <div class="text-center">
-        <div>
-          <a href="{% url 'problems:mark_problem' problem.id%}">
-            <img src="{% static "images/udacity-icon.png" %}" alt="Mark"/>
-          </a>
+  <section class="jumbotron-section">
+    <div class="container">
+      <div class="jumbotron">
+        <div class="fluid-container">
+          <div class="row">
+            <div class="col-xs-12">
+            <h2>
+              {{problem.title}} {% if problem.marked %}<img src="{% static 'images/udacity-logo-small.png' %}">{% endif %}
+                {% if user_email == problem.user.email %}
+                  <a href=""><img src="{% static "images/edit-black-1x.png" %}" alt="Edit"/>
+                  </a>
+                  <a href=""><img src="{% static "images/delete-black-1x.png" %}" alt="Delete"/>
+                  </a>
+                {% endif %}
+              {% if markable and problem.marked == None %}
+                 <a href="{% url 'problems:mark_problem' problem.id%}">
+                   <img src="{% static "images/udacity-icon.png" %}" alt="Mark"/>
+                </a>
+              {% endif %}
+            </h2>
+            </div>
+          </div>
+          <div class="row">
+            <h2 class="browse-option option-title">
+                <a href="#solutions"><span class="browse-text option-text">solutions<i class="fa fa-angle-down option-icon browse-icon"></i></span></a>&nbsp&nbsp
+            </h2>
+          </div>
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="problem-description">
+              <hr>
+                <div class="row">
+                  <p>
+                    Created by:
+                    <a href="{% url 'users:show' problem.user.user_key %}">
+                      {{problem.user}}
+                    </a>
+                  </p>
+                </div>
+                <div class="row">
+                  <p>
+                    Posted: {{problem.posted}}
+                  </p>
+                </div>
+                <div class="row">
+                  <p>{{problem.description|safe}}</p>
+                </div>
+                <div class="row">
+                <p>Difficulty: {{ problem.difficulty }}</p>
+              </div>
+              <div class="row">
+                <ul class="list-unstyled">
+                  {% for tag in problem.tags.all %}
+                      <li class="badge">{{ tag.tag_name }}</li>
+                  {% endfor %}
+                  </ul>
+              </div>
+              <div class="row" ng-controller="VoteController" ng-show="initVote({{problem.id}})">
+                  <button type='submit' class="btn btn-success" ng-click="postVote(1)">[[likes]]<span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span></button>
+                  <button type='submit' class='btn btn-danger' ng-click="postVote(2)">[[dislikes]]<span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span></button>
+            </div>
+          </div>
         </div>
-        Udacious!
       </div>
     </div>
-  {% endif %}
-  </div>
-  <div class='row pad-10'>
-    <div class="col-md-2">
-      <p>
-        Created by:
-        <a href="{% url 'users:show' problem.user.user_key %}">
-          {{problem.user}}
-        </a>
-      </p>
-      <p>
-        Posted: {{problem.posted}}
-      </p>
-      <p>{{problem.description|safe}}</p>
-    </div>
-  </div>
-  <div class="row pad-10">
-    <div class="col-md-2">
-      <b>Difficulty</b>
-    </div>
-    <div class="col-md-10">
-      {{ problem.difficulty }}
-    </div>
-  </div>
+  </section>
 
-  <div class="row pad-10 pad-top-20">
-    <div class="col-md-2">
-      <b>Tags</b>
-    </div>
-    <div class="col-md-10">
-      <ul class="list-unstyled">
-      {% for tag in problem.tags.all %}
-          <li class="badge">{{ tag.tag_name }}</li>
-      {% endfor %}
-      </ul>
-    </div>
-  </div>
 
-  <hr>
-  <div class="col-md-2" ng-controller="VoteController" ng-show="initVote({{problem.id}})">
-    <button type='submit' class="btn btn-success" ng-click="postVote(1)">[[likes]]<span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span></button>
-    <button type='submit' class='btn btn-danger' ng-click="postVote(2)">[[dislikes]]<span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span></button>
-  </div>
 
-  <div class="row pad-10">
-    <div class="col-md-12">
-      <h4>Solutions for this problem</h4>
-    </div>
-    <div class="col-md-12">
-    {% if solutions_list %}
-      <ul class="list-unstyled">
-       {% for solution in solutions_list %}
-       <li>
-         <a href="{% url 'problems:show_solution' problem.id solution.id %}">{{solution.title}}, by {{ solution.user.nickname }}</a>
 
-       </li>
-       {% endfor %}
-     </ul>
-    {% else %}
-        No solutions yet
-    {% endif %}
-    </div>
-  </div>
 
-  <div class="row pad-10">
-    <div class="col-md-12">
-      <b><a href="{% url 'problems:new_solution' problem.id %}">Submit your solution</a></b>
-    </div>
-  </div>
-  <hr>
-  <form action="{% url 'problems:add_comment_to_problem' problem.id %}" method="post" class="form-horizontal" autocomplete="off">
-    {% csrf_token %}
-    <div class="form-group">
-      <label for="id_content" class="col-md-2 control-label">Comment</label>
-      <div class="col-md-4">
-        <textarea class="form-control" id="id_content" name="content" row pad-10s="3" required></textarea>
+
+
+   <div class="problems-container" id="solutions">
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12">
+          <h4>Solutions for this problem</h4>
+          <div class="row">
+            <a href="{% url 'problems:new_solution' problem.id %}">Submit your solution</a>
+          </div>
+          {% if solutions_list %}
+            {% for solution in solutions_list %}
+            <div class="panel panel-default text-left">
+              <a class="question-link" href="{% url 'problems:show_solution' problem.id solution.id %}">
+                <div class="panel-body">
+                  <div class="row">
+                    <div class="col-xs-12">
+                      <a href="{% url 'problems:show_solution' problem.id solution.id %}">
+                        <h4 class="problem-title">{{solution.title}}</h4>
+                      </a>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-12">
+                      by: {{ solution.user.nickname }}
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-12 col-md-6">
+
+                    </div>
+                    <div class="col-xs-12 col-md-6 text-right">
+                      {{solution.likes}}<span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span></button>
+                      {{solution.dislikes}}<span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span></button>
+                    </div>
+                  </div>
+               </div>
+              </a>
+            </div>
+          {% endfor %}
+         {% endif %}
+        </div>
       </div>
     </div>
+  </div>
 
-    <div class="form-group">
-      <div class="col-md-offset-2 col-md-4">
-        <button type="submit" class="btn btn-default">Submit</button>
+<div class="container" id="comments">
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12">
+          <h4>Comments</h4>
+        </div>
+      </div>
+      <div class="panel panel-no-outline text-left">
+        <div class="panel-body" style="border=0">
+        <div class="row">
+          <form action="{% url 'problems:add_comment_to_problem' problem.id %}" method="post" class="form-horizontal" autocomplete="off">
+            {% csrf_token %}
+            <div class="col-xs-12 col-md-2">
+              <p>Leave a comment</p>
+            </div>
+            <div class="col-xs-12 col-md-8">
+                <textarea class="form-control" id="id_content" name="content" rows='5' required></textarea>
+            </div>
+            <div class="col-xs-12 col-md-2 text-right">
+               <button type="submit" class="btn btn-default">Submit</button>
+            </div>
+            </form>
+          </div>
+          </div>
+        </div>
+          {% for comment in comments_list %}
+            <div class="panel panel-default text-left">
+              <div class="panel-body">
+                <div class="row">
+                  <div class="col-xs-12">
+                    {{comment.content|safe}}
+                  </div>
+                  <div class="col-xs-12">
+                    <em>{{comment.posted}}</em>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12 col-md-6">
+                    <a href="{% url 'users:show' comment.user.user_key %}">
+                      {{ comment.user.nickname }}
+                    </a>
+                  </div>
+                  <div class="col-xs-12 col-md-6 text-right">
+                    {% if comment.user.email == user_email %}
+                      <a href="{% url 'problems:edit_comment_from_problem' problem.id comment.id %}">Edit</a> | <a href="{% url 'problems:delete_comment_from_problem' problem.id comment.id %}">Delete</a>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
       </div>
     </div>
-  </form>
-
-{% for comment in comments_list %}
-  <div class="row pad-10 pad-top-20">
-    <div class="col-md-2 text-right">
-      <a href="{% url 'users:show' comment.user.user_key %}">
-          {{ comment.user.nickname }}
-      </a>
-      <p>
-      {% if comment.user.email == user_email %}
-        <a href="{% url 'problems:edit_comment_from_problem' problem.id comment.id %}">Edit</a> | <a href="{% url 'problems:delete_comment_from_problem' problem.id comment.id %}">Delete</a>
-      {% endif %}
-    </div>
-    <div class="col-md-10">
-        <p>{{comment.content|safe}}</p>
-        <p><em>{{comment.posted}}</em></p>
-    </div>
   </div>
-{% endfor %}
+
+
 {% endblock %}

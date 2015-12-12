@@ -181,9 +181,9 @@
         // POST request to submit data
 				$http.post('/problems/create_problem/', payload, {"Content-Type": "application/json; charset=utf-8"}).
 					then (function(response) {
-            $http.get('/problems/problems_JSON/').then(function(projectResponse){
+            $http.get('/problems/problems_JSON/').then(function(problemResponse){
               sessionStorage.removeItem('problems');
-        			var data = JSON.parse(JSON.parse(projectResponse.data));
+        			var data = JSON.parse(JSON.parse(problemResponse.data));
         			sessionStorage.setItem('problems', JSON.stringify(data));
               // console.log(JSON.stringify(data.data, null, 2));
               $window.location.href = '/problems/' + response.data;

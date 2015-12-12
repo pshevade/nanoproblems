@@ -15,4 +15,4 @@ class ProblemForm(ModelForm):
 class SolutionForm(ModelForm):
     class Meta:
         model = Solution
-        exclude = ('problem', 'user', 'comments', 'likes', 'dislikes', 'like_vote_users', 'dislike_vote_users')
+        exclude = ('problem', 'user', 'comments', 'likes', 'dislikes', 'sol_like_vote_users', 'sol_dislike_vote_users')
