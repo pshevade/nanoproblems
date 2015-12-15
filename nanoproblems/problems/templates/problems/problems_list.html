@@ -7,12 +7,10 @@
       <div class="jumbotron">
         <div class="fluid-container">
           <div class="row">
-            <div class="col-xs-12">
+            <div class="col-xs-12 col-sm-6">
               <h3 class="user-welcome"> Welcome, <a class="nickname" href="{% url 'users:show' user.user_key %}">{{ user.nickname }}</a> </h3>
             </div>
-          </div>
-          <div class="row">
-            <div class="col-xs-12">
+            <div class="col-xs-12 col-sm-6">
               <div class="options-container">
                 <div class="options">
                   <h2 class="submit-option option-title">
@@ -30,20 +28,18 @@
     </div>
   </section>
 
-  <div class="problems-container" id="problems">
-    <div class="container">
-      <div class="row">
-        <div class="col-xs-12">
-          {% for problem in latest_problems_list %}
-            <div class="panel panel-default text-left">
-              <a class="question-link" href="{% url 'problems:problem_detail' problem.id%}">
-                <div class="panel-body">
-                  <div class="row">
-                    <div class="col-xs-12">
-                      <a href="{% url 'problems:problem_detail' problem.id%}">
-                        <h4 class="problem-title">{{problem.title}}</h4>
-                      </a>
-                    </div>
+  <div class="container problems-container" id="problems">
+    <div class="row">
+      <div class="col-xs-12">
+        {% for problem in latest_problems_list %}
+          <div class="panel panel-default text-left">
+            <a class="question-link" href="{% url 'problems:problem_detail' problem.id%}">
+              <div class="panel-body">
+                <div class="row">
+                  <div class="col-xs-12">
+                    <a href="{% url 'problems:problem_detail' problem.id%}">
+                      <h4 class="problem-title">{{problem.title}}</h4>
+                    </a>
                   </div>
                   <div class="row">
                     <div class="col-xs-12">
@@ -69,11 +65,11 @@
                       {{problem.dislikes}}&nbsp<span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span></button>
                     </div>
                   </div>
-               </div>
-              </a>
-            </div>
-          {% endfor %}
-        </div>
+                </div>
+             </div>
+            </a>
+          </div>
+        {% endfor %}
       </div>
     </div>
   </div>
