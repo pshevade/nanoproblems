@@ -106,8 +106,9 @@ html {
 
 .panel {
   border: none;
-  border-top: 1px solid #294860;
+  border-bottom: 1px solid #294860;
   min-height: 5em;
+  margin-bottom: 5rem;
 }
 
 .panel-divider {

@@ -33,6 +33,7 @@
       <div class="col-xs-12">
         {% for problem in latest_problems_list %}
           <div class="panel panel-default text-left">
+            <hr class="panel-divider">
             <div class="question-link" href="{% url 'problems:problem_detail' problem.id%}">
               <div class="panel-body">
                 <div class="row">
@@ -67,7 +68,6 @@
                 </div>
               </div>
             </div>
-            <hr class="panel-divider">
           </div>
         {% endfor %}
       </div>
