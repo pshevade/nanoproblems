@@ -103,7 +103,7 @@ html {
 }
 
 .filter-section {
-  margin: 0 auto 2rem;
+  margin: 0 auto 4rem;
 }
 
 .filter-title {
@@ -173,7 +173,8 @@ html {
 }
 
 .problem-title {
-  font: small-caps 400 2rem "Open Sans", sans-serif;
+  font: 400 1.5rem "Open Sans", sans-serif;
+  text-transform: uppercase;
 }
 
 .problem-title-link {
