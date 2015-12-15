@@ -28,6 +28,10 @@ html {
   font: 1.75rem "Open Sans", sans-serif;
 }
 
+.jumbotron-container {
+  max-width: 900px;
+}
+
 .jumbotron {
   padding: 0 1rem;
   margin-bottom: 1rem;
@@ -246,4 +250,8 @@ html {
 
 .score {
   font: 1.35rem "Open Sans", sans-serif;
+}
+
+.create-title {
+  font: 1rem "Open Sans", sans-serif;
 }
