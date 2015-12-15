@@ -26,6 +26,7 @@ html {
 
 .jumbotron {
   padding: 0 1rem;
+  margin-bottom: 1rem;
   background-color: #fff;
 }
 
@@ -52,6 +53,14 @@ html {
   color: #000;
 }
 
+.option-text,
+.option-text:hover,
+.option-text:visited {
+  text-decoration: none;
+  color: #333;
+  font-weight: 600;
+}
+
 .submit-option {
   border: 1px solid #294860;
   border-radius: 3px;
@@ -63,23 +72,21 @@ html {
   background-color: #294860;
 }
 
+.submit-text,
+.submit-icon {
+  color: #294860;
+}
+
 .submit-option:hover .submit-text,
 .submit-option:focus .submit-text,
 .submit-option:hover .submit-icon,
 .submit-option:focus .submit-icon {
   color: #fff;
+  font-weight: 700;
 }
 
 .submit-icon {
   padding-left: 0.5rem;
-}
-
-.option-text,
-.option-text:hover,
-.option-text:visited {
-  text-decoration: none;
-  color: #333;
-  font-weight: 600;
 }
 
 .browse-title {
@@ -95,8 +102,31 @@ html {
   padding-left: 0.5rem;
 }
 
+.filter-section {
+  margin: 0 auto 2rem;
+}
+
+.filter-title {
+  font: small-caps 700 1.5rem "Open Sans", sans-serif;
+  display: inline-block;
+  margin-right: 1rem;
+}
+
+.filter {
+  font: 1.5rem "Open Sans", sans-serif;
+  border: none;
+  border-bottom: 1px solid #a7a7a7;
+  transition: border-bottom 0.3s ease-in-out;
+}
+
+.filter:focus,
+.filter:hover {
+  outline: none;
+  border-bottom: 1px solid #6f6f6f;
+}
+
 .problems-container {
-  max-width: 870px;
+  max-width: 810px;
 }
 
 .question-link {
@@ -106,6 +136,7 @@ html {
 
 .panel {
   border: none;
+  border-top: 1px solid #294860;
   border-bottom: 1px solid #294860;
   min-height: 5em;
   margin-bottom: 5rem;
@@ -114,10 +145,9 @@ html {
 .panel-divider {
   padding: 0;
   border: none;
-  border-top: 1px solid #294860;
   color: #294860;
   text-align: center;
-  margin: 0.5rem auto;
+  margin: 0;
 }
 
 .panel-divider:after {
@@ -177,4 +207,10 @@ html {
 .score-icon {
   margin: 0.5rem 0;
   padding: 0.5rem;
+}
+
+.second-submit {
+  display: inline-block;
+  margin: 0 auto 2rem;
+  text-align: center;
 }

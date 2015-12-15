@@ -17,6 +17,8 @@
 
 .option-title {
   padding: 0.25em 1em;
+  font-size: 2rem;
+  line-height: 2.25rem;
 }
 
 .option-icon {
@@ -83,23 +85,31 @@
   opacity: 0;
 }
 
+.filter-section {
+  display: inline-block;
+  margin: 0 auto 3rem 0;
+}
+
 .panel {
-  border-bottom-color: rgba(41, 72, 96, 0.3);
-  transition: border-bottom-color 0.3s ease-in-out;
+  border-top-color: rgba(41, 72, 96, 0.2);
+  border-bottom-color: rgba(41, 72, 96, 0.2);
+  transition: all 0.3s ease-in-out;
 }
 
 .panel:hover {
+  border-top-color: rgba(41, 72, 96, 1);
   border-bottom-color: rgba(41, 72, 96, 1);
-}
-
-.panel-divider {
-  opacity: 0.5;
-  transition: opacity 0.3s ease-in-out;
 }
 
 .panel-divider:after {
   top: -1.25rem;
   font-size: 2.5rem;
+  color: rgba(41, 72, 96, 0.3);
+  transition: color 0.3s ease-in-out;
+}
+
+.panel:hover .panel-divider:after {
+  color: rgba(41,72,96,1);
 }
 
 .panel:hover .panel-divider {

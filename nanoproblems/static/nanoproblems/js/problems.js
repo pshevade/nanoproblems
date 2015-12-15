@@ -293,5 +293,46 @@ app.controller('FormController', ['$scope', '$http', '$window', function($scope,
     }
   }]);
 
+  app.controller('ProblemsController', ['$scope', '$http', '$window' function($scope, $http, $window) {
+    //
+  }]);
+
+  app.filter('problemsFilter', function() {
+    return function(items, scope) {
+      var filtered = [];
+      var checksum = [];
+      angular.forEach(items, function(item) {
+
+        itemTags = [];
+        item.fields.tags.forEach(lowerCase);
+        function lowerCase(value) {
+          if (typeof(value) == 'string') {
+            itemTags.push(value.toLowerCase());
+          } else {
+            itemTags.push(value);
+          }
+        }
+
+        if (scope.selectedTags.length == 0) {
+          filtered.push(item);
+        } else {
+          scope.selectedTags.forEach(checkTags);
+          function checkTags(value) {
+            if (itemTags.indexOf(value) == -1) {
+              checksum.push(0);
+            } else {
+              checksum.push(1);
+            }
+          }
+          if (checksum.indexOf(0) == -1) {
+            filtered.push(item);
+          }
+        }
+        checksum = [];
+      });
+      return filtered;
+    }
+  });
+
 
 })();

@@ -14,7 +14,7 @@
               <div class="options-container">
                 <div class="options">
                   <h2 class="submit-option option-title">
-                    <a class="submit-text option-text" href="{% url 'problems:new_problem' %}">Submit a problem<i class="fa fa-angle-right option-icon submit-icon"></i></a>
+                    <a class="submit-text option-text" href="{% url 'problems:new_problem' %}">submit a problem<i class="fa fa-angle-right option-icon submit-icon"></i></a>
                   </h2>
                   <h2 class="browse-option option-title">
                     <span class="browse-text option-text">or start browsing<i class="fa fa-angle-down option-icon browse-icon"></i></span>
@@ -28,7 +28,21 @@
     </div>
   </section>
 
+
+
   <main class="container problems-container" id="problems">
+
+    <div class="row">
+      <div class="col-xs-12">
+        <section class="filter-section">
+          <form class="filter-form">
+            <h3 class="filter-title">Filter by tags</h3>
+            <input class="filter" type="text" ng-model="searchText" ng-keydown="checkKeyDown($event)" ng-change="search()" placeholder="e.g. python">
+          </form>
+        </section>
+      </div>
+    </div>
+
     <div class="row">
       <div class="col-xs-12">
         {% for problem in latest_problems_list %}
@@ -45,7 +59,7 @@
                 </div>
                 <div class="row">
                   <div class="col-xs-12">
-                    <p class="problem-description">{{ problem.description }}</p>
+                    {{ problem.description | safe }}
                   </div>
                 </div>
                 <div class="row">
@@ -72,6 +86,10 @@
         {% endfor %}
       </div>
     </div>
+
+    <h2 class="submit-option option-title second-submit">
+      <a class="submit-text option-text" href="{% url 'problems:new_problem' %}">submit a problem<i class="fa fa-angle-right option-icon submit-icon"></i></a>
+    </h2>
   </main>
 
 
