@@ -212,7 +212,7 @@ def get_problem_details(request, problem_id):
         comments_list.append(comment)
     markable = get_true_if_admin(request)
     print "problem is marked on: ", problem.marked
-    return {'problem': problem, 'user_email': request.session['email'], 'solutions_list':solutions_list, 'comments_list': comments_list, 'markable':markable}
+    return {'problem': problem, 'user': User.objects.get(email=request.session['email']), 'solutions_list':solutions_list, 'comments_list': comments_list, 'markable':markable}
 
 
 def new_comment_problem(request, problem):

@@ -40,6 +40,7 @@ def problems_list(request):
 def problem_detail(request, problem_id):
     """ Return the problem details by problem_id. """
     context = logic.get_problem_details(request, problem_id)
+    print context
     return render(request, 'problems/problem_detail.html', context)
 
 

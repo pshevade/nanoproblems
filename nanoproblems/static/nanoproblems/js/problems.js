@@ -293,7 +293,7 @@ app.controller('FormController', ['$scope', '$http', '$window', function($scope,
     }
   }]);
 
-  app.controller('ProblemsController', ['$scope', '$http', '$window' function($scope, $http, $window) {
+  app.controller('ProblemsController', ['$scope', '$http', '$window', function($scope, $http, $window) {
     //
   }]);
 

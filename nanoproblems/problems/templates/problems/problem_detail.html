@@ -6,7 +6,6 @@
       <div class="jumbotron">
         <div class="fluid-container">
           <div class="row">
-            <div class="col-xs-12">
             <h2>
               {{problem.title}} {% if problem.marked %}<img src="{% static 'images/udacity-logo-small.png' %}">{% endif %}
                 {% if user_email == problem.user.email %}
@@ -20,18 +19,20 @@
                    <img src="{% static "images/udacity-icon.png" %}" alt="Mark"/>
                 </a>
               {% endif %}
-            </h2>
-            </div>
-          </div>
-          <div class="row">
-            <h2 class="browse-option option-title">
+              </h2>
+              
                 <a href="#solutions"><span class="browse-text option-text">solutions<i class="fa fa-angle-down option-icon browse-icon"></i></span></a>&nbsp&nbsp
-            </h2>
+                
+            
           </div>
           <div class="row">
             <div class="col-xs-12">
               <div class="problem-description">
-              <hr>
+                <div class="row">
+                  <p>{{problem.description|safe}}</p>
+                </div>
+                
+                <hr>
                 <div class="row">
                   <p>
                     Created by:
@@ -45,9 +46,7 @@
                     Posted: {{problem.posted}}
                   </p>
                 </div>
-                <div class="row">
-                  <p>{{problem.description|safe}}</p>
-                </div>
+                
                 <div class="row">
                 <p>Difficulty: {{ problem.difficulty }}</p>
               </div>
@@ -74,7 +73,7 @@
 
 
 
-   <div class="problems-container" id="solutions">
+   <div class="container" id="solutions">
     <div class="container">
       <div class="row">
         <div class="col-xs-12">
