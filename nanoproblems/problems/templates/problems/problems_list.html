@@ -7,10 +7,10 @@
       <div class="jumbotron">
         <div class="fluid-container">
           <div class="row">
-            <div class="col-xs-12 col-sm-6">
+            <div class="col-xs-12 col-sm-4">
               <h3 class="user-welcome"> Welcome, <a class="nickname" href="{% url 'users:show' user.user_key %}">{{ user.nickname }}</a> </h3>
             </div>
-            <div class="col-xs-12 col-sm-6">
+            <div class="col-xs-12 col-sm-8">
               <div class="options-container">
                 <div class="options">
                   <h2 class="submit-option option-title">
@@ -28,51 +28,51 @@
     </div>
   </section>
 
-  <div class="container problems-container" id="problems">
+  <main class="container problems-container" id="problems">
     <div class="row">
       <div class="col-xs-12">
         {% for problem in latest_problems_list %}
           <div class="panel panel-default text-left">
-            <a class="question-link" href="{% url 'problems:problem_detail' problem.id%}">
+            <div class="question-link" href="{% url 'problems:problem_detail' problem.id%}">
               <div class="panel-body">
                 <div class="row">
-                  <div class="col-xs-12">
-                    <a href="{% url 'problems:problem_detail' problem.id%}">
+                  <div class="col-xs-12 col-md-6">
+                    <a class="problem-title-link" href="{% url 'problems:problem_detail' problem.id%}">
                       <h4 class="problem-title">{{problem.title}}</h4>
                     </a>
                   </div>
-                  <div class="row">
-                    <div class="col-xs-12">
-                      {{ problem.description|safe }}
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-xs-12 col-md-6">
-                      <ul class="list-unstyled">
-                      {% for tag in problem.tags.all %}
-                          <li class="badge">{{tag.tag_name}}</li>
-                      {% endfor %}
-                      </ul>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-xs-12 col-md-6">
-                      {{ problem.difficulty }}
-                    </div>
-
-                    <div class="col-xs-12 col-md-6 text-right">
-                        {{problem.likes}}&nbsp<span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span></button>&nbsp
-                      {{problem.dislikes}}&nbsp<span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span></button>
-                    </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12">
+                    <p class="problem-description">{{ problem.description }}</p>
                   </div>
                 </div>
-             </div>
-            </a>
+                <div class="row">
+                  <div class="col-xs-12">
+                    <ul class="tags list-inline">
+                      {% for tag in problem.tags.all %}
+                        <li class="tag">{{ tag.tag_name }}</li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-6">
+                    <h4 class="problem-difficulty">{{ problem.difficulty }}</h4>
+                  </div>
+                  <div class="col-xs-6 text-right">
+                    <button class="score-button">{{problem.likes}}<i class="fa fa-thumbs-o-up score-icon"></i></button>
+                    <button class="score-button">{{problem.dislikes}}<i class="fa fa-thumbs-o-down score-icon"></i></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <hr class="panel-divider">
           </div>
         {% endfor %}
       </div>
     </div>
-  </div>
+  </main>
 
 
 {% endblock %}

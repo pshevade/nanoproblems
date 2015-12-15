@@ -1,32 +1,36 @@
+html {
+  font-size: 65%;
+}
+
 .navbar {
   margin-bottom: 0;
 }
 
 .nav-brand {
-  font: 700 small-caps 1.5em/0.8 "Open Sans", sans-serif;
+  font: 700 small-caps 2rem/0.8 "Open Sans", sans-serif;
 }
 
 .nav-item {
-  font: 700 1.1em "Open Sans", sans-serif;
+  font: 700 1.4rem "Open Sans", sans-serif;
   text-align: center;
 }
 
 .user-welcome {
-  font: 500 1.5em "Open Sans", sans-serif;
+  font: 500 2rem "Open Sans", sans-serif;
 }
 
 .nickname {
   font-variant: small-caps;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.05rem;
 }
 
 .jumbotron {
-  padding: 0 1em;
+  padding: 0 1rem;
   background-color: #fff;
 }
 
 .options-container {
-  max-width: 750px;
+  max-width: 400px;
   margin: 0 auto;
 }
 
@@ -37,14 +41,14 @@
 }
 
 .option-title {
-  font: 400 small-caps 1.5em "Open Sans", sans-serif;
-  letter-spacing: 0.05em;
-  padding: 0.5em 0.25em;
+  font: 400 small-caps 1.5rem "Open Sans", sans-serif;
+  letter-spacing: 0.05rem;
+  padding: 0.5rem 0.25rem;
 }
 
 .option-icon {
-  font-size: 1em;
-  line-height: 1.25em;
+  font-size: 1.5rem;
+  line-height: 1.75rem;
   color: #000;
 }
 
@@ -67,7 +71,7 @@
 }
 
 .submit-icon {
-  padding-left: 0.5em;
+  padding-left: 0.5rem;
 }
 
 .option-text,
@@ -79,8 +83,8 @@
 }
 
 .browse-title {
-  font: 400 small-caps 1.25em/2 "Open Sans", sans-serif;
-  letter-spacing: 0.05em;
+  font: 400 small-caps 1.25rem/2 "Open Sans", sans-serif;
+  letter-spacing: 0.05rem;
 }
 
 .browse-text {
@@ -88,7 +92,7 @@
 }
 
 .browse-icon {
-  padding-left: 0.5em;
+  padding-left: 0.5rem;
 }
 
 .problems-container {
@@ -101,22 +105,75 @@
 }
 
 .panel {
-  border-top: 1px solid #e7e7e7;
-  border-bottom: 1px solid #e7e7e7;
-  border-left: none;
-  border-right: none;
+  border: none;
+  border-top: 1px solid #294860;
   min-height: 5em;
-  transition: border-color 0.4s ease-in-out;
 }
 
-.panel-no-outline {
-  outline: 0px;
+.panel-divider {
+  padding: 0;
+  border: none;
+  border-top: 1px solid #294860;
+  color: #294860;
+  text-align: center;
+  margin: 0.5rem auto;
 }
 
-.panel:before {
-  content: "";
+.panel-divider:after {
+  content: "\f128";
+  display: inline-block;
+  position: relative;
+  top: -1rem;
+  font: 2rem "FontAwesome", sans-serif;
+  padding: 0 0.5em;
+  background: white;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.panel:hover {
+  cursor: pointer;
+  border-color: #294860;
+}
+
+.panel-body {
+  padding: 1rem 1.5rem;
 }
 
 .problem-title {
-  font: small-caps 1.5em "Open Sans", sans-serif;
+  font: small-caps 400 2rem "Open Sans", sans-serif;
+}
+
+.problem-title-link {
+  color: #294860;
+}
+
+.problem-description {
+  font: 1.5rem "Open Sans", sans-serif;
+}
+
+.tags {
+  margin: 1rem 0;
+}
+
+.tag {
+  background-color: #307699;
+  border-radius: 0.5rem;
+  color: #fff;
+}
+
+.problem-difficulty {
+  font: small-caps 1.35rem "Open Sans", sans-serif;
+}
+
+.score-button {
+  outline: 0;
+  background-color: transparent;
+  border: 0;
+}
+
+.score-icon {
+  margin: 0.5rem 0;
+  padding: 0.5rem;
 }
