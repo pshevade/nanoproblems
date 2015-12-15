@@ -93,7 +93,7 @@
 .panel {
   border-top-color: rgba(41, 72, 96, 0.2);
   border-bottom-color: rgba(41, 72, 96, 0.2);
-  transition: all 0.3s ease-in-out;
+  transition: all 0.2s ease-in-out;
 }
 
 .panel:hover {
@@ -106,7 +106,7 @@
   top: -1.25rem;
   font-size: 2.5rem;
   color: rgba(41, 72, 96, 0.3);
-  transition: all 0.3s ease-in-out;
+  transition: all 0.2s ease-in-out;
 }
 
 .panel:hover .panel-divider:after {
@@ -120,4 +120,12 @@
 
 .problem-title {
   font-size: 1.75rem;
+}
+
+.sections {
+  margin-top: 2rem;
+}
+
+.sections .section:first-child {
+  border-right: 1px solid #e9e9e9;
 }
