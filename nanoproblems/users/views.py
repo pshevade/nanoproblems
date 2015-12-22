@@ -1,14 +1,11 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
-from django.http import Http404
 
 from .forms import UserForm
 from .models import User
 from .models import NANODEGREE_CHOICES
-from problems.models import Problem, Solution
 import logic
-from .logic import is_authenticated, logout_user, \
-    get_udacity_openid_url, process_udacity_auth
+from .logic import is_authenticated, logout_user
 
 
 def logout(request):
@@ -50,7 +47,9 @@ def edit(request):
             return HttpResponseRedirect('/users/show/' + str(user.user_key))
     else:
         return render(request, 'users/edit_profile.html',
-                      {'form': UserForm(instance=user), 'user': user, 'nanodegree_choices':NANODEGREE_CHOICES},)
+                      {'form': UserForm(instance=user),
+                       'user': user,
+                       'nanodegree_choices': NANODEGREE_CHOICES})
 
 
 def login(request):
@@ -59,10 +58,10 @@ def login(request):
         login.redirect_on_return = '/problems/'
     if request.method == "POST":
         login.redirect_on_return = request.POST['redirect']
-        udacity_url = get_udacity_openid_url(request)
+        udacity_url = logic.get_udacity_openid_url(request)
         return HttpResponseRedirect(udacity_url)
     elif request.method == "GET":
-        request = process_udacity_auth(request)
+        request = logic.process_udacity_auth(request)
 
         if not User.objects.filter(email=request.session['email']).exists():
             user = User(email=request.session['email'],

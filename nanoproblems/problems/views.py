@@ -40,7 +40,6 @@ def problems_list(request):
 def problem_detail(request, problem_id):
     """ Return the problem details by problem_id. """
     context = logic.get_problem_details(request, problem_id)
-    print context
     return render(request, 'problems/problem_detail.html', context)
 
 
@@ -51,6 +50,7 @@ def new_problem(request):
     GET: Return the form to create a project.
     POST: Create a new project and redirect to the project details
     """
+    user = User.objects.get(email=request.session['email'])
     if request.method == "POST":
         # temp = json.loads(request.body)
         form = ProblemForm(request.POST)
@@ -77,7 +77,7 @@ def new_problem(request):
     else:
         # Remove when front end updated.
         form = ProblemForm()
-    return render(request, 'problems/new_problem.html', {'form': form})
+    return render(request, 'problems/new_problem.html', {'form': form, 'user':user})
 
 
 @is_admin()
@@ -113,6 +113,7 @@ def problems_json(request):
 @is_authenticated()
 def new_solution(request, problem_id):
     problem = logic.get_problem(problem_id)
+    user = User.objects.get(email=request.session['email'])
     if request.method == "POST":
         solution_form = SolutionForm(request.POST)
         if solution_form.is_valid():
@@ -129,12 +130,15 @@ def new_solution(request, problem_id):
 
     else:
         solution_form = SolutionForm()
-        return render(request, 'problems/new_solution.html', {'form': solution_form, 'problem_id': problem_id})
+        return render(request, 'problems/new_solution.html',
+                      {'form': solution_form,
+                       'problem_id': problem_id,
+                       'user': user})
 
 
 @is_authenticated()
 def edit_solution(request, problem_id, solution_id):
-    print "inside edit_solution"
+    user = User.objects.get(email=request.session['email'])
     solution = logic.get_solution(solution_id)
     if request.method == 'POST':
         print "inside post"
@@ -142,19 +146,26 @@ def edit_solution(request, problem_id, solution_id):
         return HttpResponseRedirect('/problems/' + str(problem_id) + '/show_solution/' + str(solution_id))
     else:
         form = SolutionForm()
-        return render(request, 'problems/edit_solution.html', {'form': form, 'solution': solution, 'problem_id': problem_id})
+        return render(request, 'problems/edit_solution.html',
+                      {'form': form,
+                       'solution': solution,
+                       'problem_id': problem_id,
+                       'user': user})
 
 
 @is_authenticated()
 def delete_solution(request, problem_id, solution_id):
-    print "inside edit_solution"
+    user = User.objects.get(email=request.session['email'])
     solution = logic.get_solution(solution_id)
     if request.method == 'POST':
         print "inside post"
         logic.delete_solution(request, solution)
         return HttpResponseRedirect('/problems/' + str(problem_id))
     else:
-        return render(request, 'problems/delete_solution.html', {'solution': solution, 'problem_id': problem_id})
+        return render(request, 'problems/delete_solution.html',
+                      {'solution': solution,
+                       'problem_id': problem_id,
+                       'user': user})
 
 
 @is_authenticated()

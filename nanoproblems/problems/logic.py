@@ -35,13 +35,14 @@ def _get_tags(tag_string):
 def get_solution_details(request, problem_id, solution_id):
     problem = get_problem(problem_id)
     solution = get_solution(solution_id)
+    user = User.objects.get(email=request.session['email'])
     comments_list = []
     for comment in solution.comments.order_by('-posted'):
         comment.content = markdown.markdown(comment.content,
                                             extensions=['markdown.extensions.fenced_code'])
         comments_list.append(comment)
     print "this is the comments list: ", comments_list
-    return {'solution': solution, 'problem': problem, 'user_email': request.session['email'], 'comments_list':comments_list}
+    return {'solution': solution, 'problem': problem, 'user': user, 'comments_list':comments_list}
 
 
 @is_authorized()
