@@ -1,32 +1,45 @@
+html {
+  font-size: 65%;
+}
+
 .navbar {
   margin-bottom: 0;
 }
 
 .nav-brand {
-  font: 700 small-caps 1.5em/0.8 "Open Sans", sans-serif;
+  font: 700 small-caps 2rem/0.8 "Open Sans", sans-serif;
 }
 
 .nav-item {
-  font: 700 1.1em "Open Sans", sans-serif;
+  font: 700 1.4rem "Open Sans", sans-serif;
   text-align: center;
 }
 
 .user-welcome {
-  font: 500 1.5em "Open Sans", sans-serif;
+  font: 500 2rem "Open Sans", sans-serif;
 }
 
 .nickname {
   font-variant: small-caps;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.05rem;
+}
+
+.title {
+  font: 1.75rem "Open Sans", sans-serif;
+}
+
+.jumbotron-container {
+  max-width: 900px;
 }
 
 .jumbotron {
-  padding: 0 1em;
+  padding: 0 1rem;
+  margin-bottom: 1rem;
   background-color: #fff;
 }
 
 .options-container {
-  max-width: 750px;
+  max-width: 400px;
   margin: 0 auto;
 }
 
@@ -37,15 +50,23 @@
 }
 
 .option-title {
-  font: 400 small-caps 1.5em "Open Sans", sans-serif;
-  letter-spacing: 0.05em;
-  padding: 0.5em 0.25em;
+  font: 400 small-caps 1.5rem "Open Sans", sans-serif;
+  letter-spacing: 0.05rem;
+  padding: 0.5rem 0.25rem;
 }
 
 .option-icon {
-  font-size: 1em;
-  line-height: 1.25em;
+  font-size: 1.5rem;
+  line-height: 1.75rem;
   color: #000;
+}
+
+.option-text,
+.option-text:hover,
+.option-text:visited {
+  text-decoration: none;
+  color: #333;
+  font-weight: 600;
 }
 
 .submit-option {
@@ -59,28 +80,26 @@
   background-color: #294860;
 }
 
+.submit-text,
+.submit-icon {
+  color: #294860;
+}
+
 .submit-option:hover .submit-text,
 .submit-option:focus .submit-text,
 .submit-option:hover .submit-icon,
 .submit-option:focus .submit-icon {
   color: #fff;
+  font-weight: 700;
 }
 
 .submit-icon {
-  padding-left: 0.5em;
-}
-
-.option-text,
-.option-text:hover,
-.option-text:visited {
-  text-decoration: none;
-  color: #333;
-  font-weight: 600;
+  padding-left: 0.5rem;
 }
 
 .browse-title {
-  font: 400 small-caps 1.25em/2 "Open Sans", sans-serif;
-  letter-spacing: 0.05em;
+  font: 400 small-caps 1.25rem/2 "Open Sans", sans-serif;
+  letter-spacing: 0.05rem;
 }
 
 .browse-text {
@@ -88,11 +107,34 @@
 }
 
 .browse-icon {
-  padding-left: 0.5em;
+  padding-left: 0.5rem;
+}
+
+.filter-section {
+  margin: 0 auto 4rem;
+}
+
+.filter-title {
+  font: small-caps 700 1.5rem "Open Sans", sans-serif;
+  display: inline-block;
+  margin-right: 1rem;
+}
+
+.filter {
+  font: 1.5rem "Open Sans", sans-serif;
+  border: none;
+  border-bottom: 1px solid #a7a7a7;
+  transition: border-bottom 0.3s ease-in-out;
+}
+
+.filter:focus,
+.filter:hover {
+  outline: none;
+  border-bottom: 1px solid #6f6f6f;
 }
 
 .problems-container {
-  max-width: 870px;
+  max-width: 810px;
 }
 
 .question-link {
@@ -101,22 +143,115 @@
 }
 
 .panel {
-  border-top: 1px solid #e7e7e7;
-  border-bottom: 1px solid #e7e7e7;
-  border-left: none;
-  border-right: none;
+  border: none;
+  border-top: 1px solid #294860;
+  border-bottom: 1px solid #294860;
   min-height: 5em;
-  transition: border-color 0.4s ease-in-out;
+  margin-bottom: 5rem;
 }
 
-.panel-no-outline {
-  outline: 0px;
+.panel-divider {
+  padding: 0;
+  border: none;
+  color: #294860;
+  text-align: center;
+  margin: 0;
 }
 
-.panel:before {
-  content: "";
+.panel-divider:after {
+  content: "\f128";
+  display: inline-block;
+  position: relative;
+  top: -1rem;
+  font: 2rem "FontAwesome", sans-serif;
+  padding: 0 0.5em;
+  background: white;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.panel:hover {
+  cursor: pointer;
+  border-color: #294860;
+}
+
+.panel-body {
+  padding: 1rem 1.5rem;
 }
 
 .problem-title {
-  font: small-caps 1.5em "Open Sans", sans-serif;
+  font: 400 1.5rem "Open Sans", sans-serif;
+  text-transform: uppercase;
+}
+
+.problem-title-link {
+  color: #294860;
+}
+
+.problem-description {
+  font: 1.5rem "Open Sans", sans-serif;
+}
+
+.tags {
+  margin: 1rem 0;
+}
+
+.tag {
+  background-color: #307699;
+  border-radius: 0.5rem;
+  color: #fff;
+}
+
+.problem-difficulty {
+  font: small-caps 1.35rem "Open Sans", sans-serif;
+}
+
+.score-button {
+  outline: 0;
+  background-color: transparent;
+  border: 0;
+}
+
+.score-icon {
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+}
+
+.second-submit {
+  display: inline-block;
+  margin: 0 auto 2rem;
+  text-align: center;
+}
+
+.border-hr {
+  border: 0;
+  height: 1px;
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+}
+
+.profile-list {
+  margin: 3rem auto 0;
+  max-width: 400px;
+}
+
+.section-title {
+  font: 2rem "Open Sans", sans-serif;
+}
+
+.problem-comments {
+  font: 1.5rem "Open Sans", sans-serif;
+}
+
+.work-link {
+  font: 1.5rem "Open Sans", sans-serif;
+  text-transform: uppercase;
+}
+
+.score {
+  font: 1.35rem "Open Sans", sans-serif;
+}
+
+.create-title {
+  font: 1rem "Open Sans", sans-serif;
 }

@@ -1,21 +1,24 @@
-@media screen and (min-width:900px) {
+@media screen and (min-width: 785px) {
   .jumbotron {
     text-align: left;
   }
-
+  .options-container {
+    margin: 0 0 0 auto;
+    max-width: 400px;
+  }
   .options {
-    text-align: right;
     flex-flow: row wrap;
     justify-content: flex-end;
   }
-}
-
-.options-container {
-  margin: 0 0 0 auto;
+  .panel:before {
+    content: "";
+  }
 }
 
 .option-title {
   padding: 0.25em 1em;
+  font-size: 2rem;
+  line-height: 2.25rem;
 }
 
 .option-icon {
@@ -48,6 +51,12 @@
   opacity: 0;
 }
 
+.submit-option:hover .submit-text,
+.submit-option:focus .submit-text,
+.submit-option:visited .submit-text {
+  text-decoration: none;
+}
+
 .option-title, .browse-title {
   font-size: 1.25em;
 }
@@ -76,7 +85,43 @@
   opacity: 0;
 }
 
+.filter-section {
+  display: inline-block;
+  margin: 0 auto 5rem 0;
+}
+
+.panel {
+  border-top-color: rgba(41, 72, 96, 0.2);
+  border-bottom-color: rgba(41, 72, 96, 0.2);
+  transition: all 0.2s ease-in-out;
+}
+
 .panel:hover {
-  cursor: pointer;
-  border-color: #294860;
+  border-top-color: rgba(41, 72, 96, 1);
+  border-bottom-color: rgba(41, 72, 96, 1);
+}
+
+.panel-divider:after {
+  left: 0;
+  top: -1.25rem;
+  font-size: 2.5rem;
+  color: rgba(41, 72, 96, 0.3);
+  transition: all 0.2s ease-in-out;
+}
+
+.panel:hover .panel-divider:after {
+  color: rgba(41,72,96,1);
+  left: calc(-50% + 2rem);
+}
+
+.panel:hover .panel-divider {
+  opacity: 1;
+}
+
+.problem-title {
+  font-size: 1.75rem;
+}
+
+.sections {
+  margin-top: 2rem;
 }

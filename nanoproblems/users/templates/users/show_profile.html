@@ -1,74 +1,72 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Nanoproblems</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"/>
+{% extends "problems/base.html" %}
+{% block content %}
   {% load staticfiles %}
-  <link rel="stylesheet" type="text/css" href="{% static "css/bobblehead.css" %}"/>
-</head>
-
-<body class="container">
-  <div class="row pad-10 margin-top-20 highlight">
-    <div class="col-md-12">
-      <a href="{% url 'problems:problems_list' %}">
-        <img src="{% static "images/arrow-back-white-1x.png" %}" alt="Return to main page"/>
-        Back
-      </a>
-    </div>
-  </div>
 
 
-  <div class="row">
-    <div class="col-md-12">
-      <h2>Hi, {{ user.nickname }}</h2>
-      <p>Expertise: {{ user.nanodegree }}</p>
-      {% if current_user == user.email %}
-      <a href="{% url 'users:edit' %}">Edit profile</a>
-      {% endif %}
-    </div>
-  </div>
-
-
-  <div class="row">
-    <div class="col-md-12">
-      <h4>Your problem ideas:</h4>
-      <div class="panel panel-default">
-        <div class="panel-body">
-          {% if problems %}
-          <ul>
-              {% for problem in problems %}
-              <!-- <li><a href="/problems/{{ problem.pk }}/">{{problem.title}}</a></li>
-               -->
-               <li><a href="{% url 'problems:problem_detail' problem.id %}">{{problem.title}}</a></li>
-               {% endfor %}
-          </ul>
-          {% else %}
-          No problem challenges created yet
-          {% endif %}
-        </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <h3 class="welcome">
+          <span class="nickname"> {{ user.nickname }} : </span> <span class="title">{{ user.nanodegree }} </span>
+        </h3>
+        {% if current_user == user.email %}
+        <a href="{% url 'users:edit' %}">Edit profile</a>
+        {% endif %}
       </div>
     </div>
-  </div>
 
-  <div class="row">
-    <div class="col-md-12">
-      <h4>Your solutions:</h4>
-      <div class="panel panel-default">
-        <div class="panel-body">
-          {% if solutions_list %}
-          <ul>
-            {% for solution in solutions_list %}
-            <li><a href="{{solution.link}}">{{solution.link}}</a> | <a href="{% url 'solutions:show_solution' solution.id %}">Details </a></li>
+
+    <div class="row sections">
+      <div class="col-xs-12 col-sm-6 section">
+        <h3 class="section-title">Your problem ideas:</h4>
+        <hr class="border-hr">
+        {% if problems %}
+        <ul class="list-unstyled profile-list">
+            {% for problem in problems %}
+            <!-- <li><a href="/problems/{{ problem.pk }}/">{{problem.title}}</a></li>
+             -->
+            <li class="row">
+              <div class="col-xs-12">
+                <div class="panel profile-item-panel text-left">
+                  <div class="panel-body">
+                    <a class="work-link" href="{% url 'problems:problem_detail' problem.id %}">{{problem.title}}</a>
+                    <h4 class="problem-comments"> {{problem.comments}} </h4>
+                    <div class="col-xs-12">
+                      <span class="score">{{problem.likes}}<i class="fa fa-thumbs-o-up score-icon"></i></span>
+                      <span class="score">{{problem.dislikes}}<i class="fa fa-thumbs-o-down score-icon"></i></span>
+                  </div>
+                  </div>
+                </div>
+              </div>
+            </li>
             {% endfor %}
-          </ul>
-          {% else %}
-          No solutions yet
-          {% endif %}
-        </div>
+        </ul>
+        {% else %}
+          No problem challenges created yet
+        {% endif %}
+      </div>
+
+      <div class="col-xs-12 col-sm-6 section">
+        <h3 class="section-title">Your solutions:</h4>
+        <hr class="border-hr">
+        {% if solutions_list %}
+        <ul>
+          {% for solution in solutions_list %}
+            <li class="row">
+              <div class="col-xs-12">
+                <div class="panel profile-item-panel text-left">
+                  <div class="panel-body">
+                    <a class="work-link" href="{{solution.link}}">{{solution.link}}</a> | <a href="{% url 'solutions:show_solution' solution.id %}"> Details </a>
+                  </div>
+                </div>
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        No solutions yet
+        {% endif %}
       </div>
     </div>
-  </div>
 
-</body>
-</html>
+{% endblock %}
