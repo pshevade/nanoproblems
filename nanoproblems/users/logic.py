@@ -7,6 +7,9 @@ from openid.consumer import consumer
 from openid.extensions import ax, sreg
 
 from config import openid_settings
+from django.http import Http404
+from .models import User
+from problems.models import Problem, Solution
 
 
 def is_admin():
@@ -63,6 +66,40 @@ def is_authorized():
                     print "user not an attribute in any of the arguments."
         return wrapper
     return decorator
+
+
+def get_user(request, user_key=None):
+    if user_key:
+        try:
+            user = User.objects.get(user_key=user_key)
+        except User.DoesNotExist:
+            raise Http404("User doesnt exist")
+    else:
+        try:
+            user = User.objects.get(email=request.session['email'])
+        except User.DoesNotExist:
+            raise Http404("User does not exist/is not signed in")
+    return user
+
+
+def get_user_submitted_problems(user):
+    problems_list = Problem.objects.filter(user=user)
+    return problems_list
+
+
+def get_user_submitted_solutions(user):
+    solutions_list = Solution.objects.filter(user=user)
+    return solutions_list
+
+
+def get_user_liked_problems(user):
+    problems = Problem.objects.filter(like_vote_users=user).all()
+    return problems
+
+
+def get_user_liked_solutions(user):
+    solutions = Solution.objects.filter(sol_like_vote_users=user).all()
+    return solutions
 
 
 def logout_user(request):

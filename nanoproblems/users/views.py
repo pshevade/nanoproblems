@@ -6,7 +6,7 @@ from .forms import UserForm
 from .models import User
 from .models import NANODEGREE_CHOICES
 from problems.models import Problem, Solution
-
+import logic
 from .logic import is_authenticated, logout_user, \
     get_udacity_openid_url, process_udacity_auth
 
@@ -21,29 +21,26 @@ def logout(request):
 @is_authenticated()
 def show(request, user_key):
     """ Show user's profile, and the project's they have created. """
-    try:
-        user = User.objects.get(user_key=user_key)
-        problems_list = Problem.objects.filter(user=user)
-        # Return all submissions that the user has made.
-        solutions_list = Solution.objects.filter(user=user)
-    except User.DoesNotExist:
-        raise Http404("User doesnt exist")
+    user = logic.get_user(request, user_key=user_key)
+    problems = logic.get_user_submitted_problems(user)
+    solutions = logic.get_user_submitted_solutions(user)
+    liked_problems = logic.get_user_liked_problems(user)
+    liked_solutions = logic.get_user_liked_solutions(user)
     return render(request,
                   'users/show_profile.html',
                   {'user': user,
-                   'problems': problems_list,
-                   'solutions': solutions_list,
-                   'current_user': request.session['email']}
-                  )
+                   'problems': problems,
+                   'solutions': solutions,
+                   'current_user': request.session['email'],
+                   'liked_problems': liked_problems,
+                   'liked_solutions': liked_solutions
+                   })
 
 
 @is_authenticated()
 def edit(request):
     """ Edit the user's own profile """
-    try:
-        user = User.objects.get(email=request.session['email'])
-    except User.DoesNotExist:
-        raise Http404("User does not exist/is not signed in")
+    user = logic.get_user(request)
     if request.method == "POST":
         form = UserForm(request.POST, instance=user)
         # check whether it's valid:
