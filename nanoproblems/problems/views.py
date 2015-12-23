@@ -204,6 +204,12 @@ def add_comment_to_problem(request, problem_id):
 
 
 @is_authenticated()
+def new_problem_comment(request, problem_id):
+    print "Here is the json: ", request.get_json()
+    return HttpResponseRedirect('/problems/' + str(problem_id))
+
+
+@is_authenticated()
 def edit_comment_from_problem(request, problem_id, comment_id):
     problem = logic.get_problem(problem_id)
     comment = comments_logic.get_comment(comment_id)

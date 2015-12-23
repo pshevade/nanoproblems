@@ -15,6 +15,7 @@
   app.controller("CommentsController", function($scope, CommentsService, $sce){
         $scope.comments=[]
         $scope.problem_id = -1;
+        $scope.comment = {}
 
         $scope.renderHtml = function (htmlCode){
           return $sce.trustAsHtml(htmlCode);
@@ -29,6 +30,16 @@
                 // $scope.likes = dataResponse.data.Item.likes;
                 // $scope.dislikes = dataResponse.data.Item.dislikes;
             });
+        };
+
+        $scope.postComment = function(problem_id, user_email) {
+            console.log("Called postComment!")
+            console.log("inside postComment: ", $comment, problem_id, user_email)
+            // VoteService.postProblemComment($scope.problem_id, comment, user_email).then(function(dataResponse){
+            //     console.log("We posted!")
+            //     console.log("here is the response: ", dataResponse.data)
+            //     $scope.getComments()
+            // })
         };
 
         $scope.initComments = function(problem_id) {
@@ -95,7 +106,7 @@
         };
 
         $scope.initVote = function(problem_id) {
-        	console.log("init vote! the problem id is: ", problem_id)
+        	console.log("init Vote! the problem id is: ", problem_id)
             if ($scope.problem_id == -1) {
                 $scope.problem_id = problem_id
                 $scope.getVote()
@@ -116,7 +127,6 @@
             };
             return true;
         };
-
     });
 
 	app.service("VoteService", function($http){
@@ -184,14 +194,14 @@
       }
 
 
-      this.addReview = function(restaurant_id, review_obj) {
-          restaurant_url = '/restaurants/' + restaurant_id + '/addnewreview';
-          console.log("Sending HTTP req to ", restaurant_url);
-          console.log("Review Obj, ", review_obj)
+      this.postProblemComment = function(id, comment, user_email) {
+          comments_url = '/problems/' + id + '/comments/new/';
+          console.log("Sending HTTP req to ", comments_url);
+          console.log("Comment obj, ", comment)
           return $http({
               method  : 'POST',
-              url     : restaurant_url,
-              data    : review_obj,
+              url     : comments_url,
+              data    : comment_obj,
               headers : {'Content-Type': 'application/json'},
           });
       };

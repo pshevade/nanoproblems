@@ -12,6 +12,8 @@ urlpatterns = [
     url(r'problems_json/(?P<problem_id>[0-9]+)$', views.problem_as_json, name='problem_as_json'),
     url(r'problems_json/all/$', views.problems_json, name='problems_json'),
     url(r'^(?P<problem_id>[0-9])+/comments/all/$', views.comments_as_json, name='comments_as_json'),
+    url(r'^(?P<problem_id>[0-9])+/comments/new/$', views.new_problem_comment, name='new_problem_comment'),
+
     # url(r'^(?P<problem_id>[0-9]+)/delete_problem', views.delete_problem, name='delete_problem'),
     url(r'^(?P<problem_id>[0-9]+)/edit_comment/(?P<comment_id>[0-9]+)$', views.edit_comment_from_problem, name='edit_comment_from_problem'),
     url(r'^(?P<problem_id>[0-9]+)/delete_comment/(?P<comment_id>[0-9]+)$', views.delete_comment_from_problem, name='delete_comment_from_problem'),

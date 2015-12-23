@@ -8,7 +8,7 @@
           <div class="row">
             <h2>
               {{problem.title}} {% if problem.marked %}<img src="{% static 'images/udacity-logo-small.png' %}">{% endif %}
-                {% if user_email == problem.user.email %}
+                {% if user.email == problem.user.email %}
                   <a href=""><img src="{% static "images/edit-black-1x.png" %}" alt="Edit"/>
                   </a>
                   <a href=""><img src="{% static "images/delete-black-1x.png" %}" alt="Delete"/>
@@ -57,7 +57,7 @@
                   {% endfor %}
                   </ul>
               </div>
-              <div class="row" ng-controller="VoteController" ng-show="initVote({{problem.id}})">
+              <div class="row" ng-controller="VoteController" ng-init="initVote({{problem.id}})">
                   <button type='submit' class="btn btn-success" ng-click="postVote(1)">[[likes]]<span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span></button>
                   <button type='submit' class='btn btn-danger' ng-click="postVote(2)">[[dislikes]]<span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span></button>
             </div>
@@ -118,7 +118,7 @@
   </div>
 
 <div class="container" id="comments">
-    <div class="container" ng-controller="CommentsController" ng-show="initComments({{problem.id}})">
+    <div class="container" ng-controller="CommentsController" ng-init="initComments({{problem.id}})">
       <div class="row">
         <div class="col-xs-12">
           <h4>Comments</h4>
@@ -127,16 +127,16 @@
       <div class="panel panel-no-outline text-left">
        <div class="panel-body" style="border=0">
         <div class="row">
-           <form action="{% url 'problems:add_comment_to_problem' problem.id %}" method="post" class="form-horizontal" autocomplete="off">
+           <form name="commentForm" method='post' ng-submit="postComment({{problem.id}}, {{user.email}})" class="form-horizontal" autocomplete="off">
             {% csrf_token %}
             <div class="col-xs-12 col-md-2">
               <p>Leave a comment</p>
             </div>
             <div class="col-xs-12 col-md-8">
-                <textarea class="form-control" id="`" name="content" rows='5' required></textarea>
+                <textarea  ng-model="comment.content" class="form-control" id="`" name="content" rows='5' required></textarea>
             </div>
             <div class="col-xs-12 col-md-2 text-right">
-               <button type="submit" class="btn btn-default">Submit</button>
+               <input type="submit" class="btn btn-default">
             </form>
           </div>
          </div>
