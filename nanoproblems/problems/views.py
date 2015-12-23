@@ -256,3 +256,9 @@ def delete_comment_from_solution(request, problem_id, solution_id, comment_id):
     if request.method == 'GET':
         logic.delete_comment_solution(request, solution, comment_id)
     return HttpResponseRedirect('/problems/' + str(problem_id) + '/show_solution/' + str(solution_id))
+
+
+@is_authenticated()
+def comments_as_json(request, problem_id):
+    return HttpResponse(logic.get_comments_as_json(problem_id=problem_id),
+                        content_type='application/json')

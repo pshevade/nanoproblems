@@ -20,10 +20,10 @@
                 </a>
               {% endif %}
               </h2>
-              
+
                 <a href="#solutions"><span class="browse-text option-text">solutions<i class="fa fa-angle-down option-icon browse-icon"></i></span></a>&nbsp&nbsp
-                
-            
+
+
           </div>
           <div class="row">
             <div class="col-xs-12">
@@ -31,7 +31,7 @@
                 <div class="row">
                   <p>{{problem.description|safe}}</p>
                 </div>
-                
+
                 <hr>
                 <div class="row">
                   <p>
@@ -46,7 +46,7 @@
                     Posted: {{problem.posted}}
                   </p>
                 </div>
-                
+
                 <div class="row">
                 <p>Difficulty: {{ problem.difficulty }}</p>
               </div>
@@ -118,60 +118,50 @@
   </div>
 
 <div class="container" id="comments">
-    <div class="container">
+    <div class="container" ng-controller="CommentsController" ng-show="initComments({{problem.id}})">
       <div class="row">
         <div class="col-xs-12">
           <h4>Comments</h4>
         </div>
       </div>
       <div class="panel panel-no-outline text-left">
-        <div class="panel-body" style="border=0">
+       <div class="panel-body" style="border=0">
         <div class="row">
-          <form action="{% url 'problems:add_comment_to_problem' problem.id %}" method="post" class="form-horizontal" autocomplete="off">
+           <form action="{% url 'problems:add_comment_to_problem' problem.id %}" method="post" class="form-horizontal" autocomplete="off">
             {% csrf_token %}
             <div class="col-xs-12 col-md-2">
               <p>Leave a comment</p>
             </div>
             <div class="col-xs-12 col-md-8">
-                <textarea class="form-control" id="id_content" name="content" rows='5' required></textarea>
+                <textarea class="form-control" id="`" name="content" rows='5' required></textarea>
             </div>
             <div class="col-xs-12 col-md-2 text-right">
                <button type="submit" class="btn btn-default">Submit</button>
-            </div>
             </form>
           </div>
-          </div>
+         </div>
         </div>
-          {% for comment in comments_list %}
-            <div class="panel panel-default text-left">
-              <div class="panel-body">
-                <div class="row">
-                  <div class="col-xs-12">
-                    {{comment.content|safe}}
-                  </div>
-                  <div class="col-xs-12">
-                    <em>{{comment.posted}}</em>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-xs-12 col-md-6">
-                    <a href="{% url 'users:show' comment.user.user_key %}">
-                      {{ comment.user.nickname }}
-                    </a>
-                  </div>
-                  <div class="col-xs-12 col-md-6 text-right">
-                    {% if comment.user.email == user_email %}
-                      <a href="{% url 'problems:edit_comment_from_problem' problem.id comment.id %}">Edit</a> | <a href="{% url 'problems:delete_comment_from_problem' problem.id comment.id %}">Delete</a>
-                    {% endif %}
-                  </div>
-                </div>
+        <div class="panel panel-default text-left" ng-repeat="comment in comments">
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-xs-12" ng-bind-html="renderHtml(comment.fields.content)">
+
+              </div>
+              <div class="col-xs-12">
+                <em>[[comment.fields.posted]]</em>
               </div>
             </div>
-          {% endfor %}
+            <div class="row">
+              <div class="col-xs-12 col-md-6">
+                  [[ comment.fields.user[0] ]]
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
+</div>
 
 
 {% endblock %}

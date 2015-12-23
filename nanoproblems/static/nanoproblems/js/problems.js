@@ -12,6 +12,38 @@
         $interpolateProvider.endSymbol(']]');
     }])
 
+  app.controller("CommentsController", function($scope, CommentsService, $sce){
+        $scope.comments=[]
+        $scope.problem_id = -1;
+
+        $scope.renderHtml = function (htmlCode){
+          return $sce.trustAsHtml(htmlCode);
+        };
+
+        $scope.getComments = function() {
+            console.log("Inside getComments, and the problem_id is: ", $scope.problem_id)
+            CommentsService.getProblemComments($scope.problem_id).then(function(dataResponse){
+                console.log("Raw fetch data: ", JSON.parse(dataResponse.data)[0])
+                $scope.comments = JSON.parse(dataResponse.data)
+                console.log("The comments var is: ", $scope.comments)
+                // $scope.likes = dataResponse.data.Item.likes;
+                // $scope.dislikes = dataResponse.data.Item.dislikes;
+            });
+        };
+
+        $scope.initComments = function(problem_id) {
+          console.log("init comments! the problem id is: ", problem_id)
+            if ($scope.problem_id == -1) {
+                console.log("inside if statement.")
+                $scope.problem_id = problem_id
+                $scope.getComments()
+            };
+            return true;
+
+        };
+
+    });
+
 	app.controller("VoteController", function($scope, VoteService){
         $scope.likes = 0;
         $scope.dislikes = 0;
@@ -134,7 +166,36 @@
         };
     });
 
-///
+  /* CommentsService -
+        Service to get the reviews and send new comments to the database
+    */
+  app.service("CommentsService", function($http){
+      console.log("CommentsService on")
+      //this.review = {};
+
+
+      this.getProblemComments = function(problem_id) {
+          comments_url = '/problems/' + problem_id + '/comments/all/';
+          return $http({
+              method  : 'GET',
+              url     : comments_url,
+              headers : {'Content-Type': 'application/json'},
+          });
+      }
+
+
+      this.addReview = function(restaurant_id, review_obj) {
+          restaurant_url = '/restaurants/' + restaurant_id + '/addnewreview';
+          console.log("Sending HTTP req to ", restaurant_url);
+          console.log("Review Obj, ", review_obj)
+          return $http({
+              method  : 'POST',
+              url     : restaurant_url,
+              data    : review_obj,
+              headers : {'Content-Type': 'application/json'},
+          });
+      };
+  });
 
 app.controller('FormController', ['$scope', '$http', '$window', function($scope, $http, $window){
 		// Set defaults where necessary

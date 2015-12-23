@@ -337,3 +337,21 @@ def get_solutions_json():
                                                          'pk'),
                                                  use_natural_foreign_keys=True)
     return json.dumps(solutions_serialized)
+
+
+def get_comments_as_json(solution_id=None, problem_id=None):
+    comments_list=[]
+    if problem_id:
+        comment_from = get_problem(problem_id)
+    if solution_id:
+        comment_from = get_solution(solution_id)
+    for comment in comment_from.comments.order_by('-posted'):
+        comment.content = markdown.markdown(comment.content, extensions=['markdown.extensions.fenced_code'])
+        comments_list.append(comment)
+    comments_serialized = serializers.serialize('json',
+                                                comments_list,
+                                                fields=('content',
+                                                        'posted',
+                                                        'user'),
+                                                use_natural_foreign_keys=True)
+    return json.dumps(comments_serialized)

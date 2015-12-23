@@ -10,8 +10,8 @@ urlpatterns = [
     url(r'^(?P<problem_id>[0-9]+)/mark_problem/$', views.mark_problem, name='mark_problem'),
     url(r'^(?P<problem_id>[0-9]+)/vote/(?P<vote>[0-9]+)$', views.vote_problem, name='vote_problem'),
     url(r'problems_json/(?P<problem_id>[0-9]+)$', views.problem_as_json, name='problem_as_json'),
-    url(r'problems_json/all$', views.problems_json, name='problems_json'),
-
+    url(r'problems_json/all/$', views.problems_json, name='problems_json'),
+    url(r'^(?P<problem_id>[0-9])+/comments/all/$', views.comments_as_json, name='comments_as_json'),
     # url(r'^(?P<problem_id>[0-9]+)/delete_problem', views.delete_problem, name='delete_problem'),
     url(r'^(?P<problem_id>[0-9]+)/edit_comment/(?P<comment_id>[0-9]+)$', views.edit_comment_from_problem, name='edit_comment_from_problem'),
     url(r'^(?P<problem_id>[0-9]+)/delete_comment/(?P<comment_id>[0-9]+)$', views.delete_comment_from_problem, name='delete_comment_from_problem'),

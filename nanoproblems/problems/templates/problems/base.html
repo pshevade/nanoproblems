@@ -30,11 +30,11 @@
       <div class="collapse navbar-collapse" id="navbar">
         <ul class="nav navbar-nav navbar-right">
           <li><a class="nav-item" href="{% url 'problems:new_problem' %}">Contribute </a></li>
-          <li><a class="nav-item" href="">Browse </a></li>
+          <li><a class="nav-item" href="{% url 'problems:problems_list' %}">Browse </a></li>
           <li class="dropdown">
             <a href="#" class="dropdown-toggle nav-item" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ user.nickname }} <span class="caret"></span></a>
             <ul class="dropdown-menu">
-              <li><a class="nav-item" href="#">Profile</a></li>
+              <li><a class="nav-item" href="{%url 'users:show' user_key=user.user_key%}">Profile</a></li>
               <li role="separator" class="divider"></li>
               <li><a class="nav-item" href="{% url 'users:logout' %}">Sign Out</a></li>
             </ul>
