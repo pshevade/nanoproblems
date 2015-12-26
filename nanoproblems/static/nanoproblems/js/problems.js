@@ -16,6 +16,7 @@
   app.controller("CommentsController", function($scope, CommentsService, $sce){
         $scope.comments=[]
         $scope.problem_id = -1;
+        $scope.solution_id = -1;
         $scope.comment = {}
 
         $scope.renderHtml = function (htmlCode){
@@ -24,7 +25,7 @@
 
         $scope.getComments = function() {
             console.log("Inside getComments, and the problem_id is: ", $scope.problem_id)
-            CommentsService.getProblemComments($scope.problem_id).then(function(dataResponse){
+            CommentsService.getComments($scope.problem_id, null).then(function(dataResponse){
                 console.log("Raw fetch data: ", JSON.parse(dataResponse.data)[0])
                 $scope.comments = JSON.parse(dataResponse.data)
                 console.log("The comments var is: ", $scope.comments)
@@ -38,7 +39,7 @@
             // $scope.comment.user_email = user_email
             console.log("inside postComment: ", $scope.comment, problem_id, user_email)
 
-            CommentsService.postProblemComment($scope.problem_id, $scope.comment).then(function(dataResponse){
+            CommentsService.postComment($scope.problem_id, null, $scope.comment, "problems").then(function(dataResponse){
                 console.log("We posted!")
                 console.log("here is the response: ", dataResponse.data)
                 $scope.getComments()
@@ -48,12 +49,11 @@
 
         $scope.initComments = function(problem_id) {
           console.log("init comments! the problem id is: ", problem_id)
-            if ($scope.problem_id == -1) {
-                console.log("inside if statement.")
-                $scope.problem_id = problem_id
-                $scope.getComments()
-            };
-            return true;
+
+          console.log("inside if statement.")
+          $scope.problem_id = problem_id
+          $scope.getComments()
+          return true;
 
         };
 
@@ -188,8 +188,14 @@
       //this.review = {};
 
 
-      this.getProblemComments = function(problem_id) {
-          comments_url = '/problems/' + problem_id + '/comments/all/';
+      this.getComments = function(problem_id, solution_id) {
+          if (!solution_id){
+            comments_url = '/problems/' + problem_id + '/comments/all/';
+
+          }
+          else {
+            comments_url = '/problems/' + problem_id + '/show_solution/' + solution_id + '/comments/all/'
+          }
           return $http({
               method  : 'GET',
               url     : comments_url,
@@ -198,8 +204,14 @@
       }
 
 
-      this.postProblemComment = function(id, comment_obj) {
-          comments_url = '/problems/' + id + '/comments/new/';
+      this.postComment = function(problem_id, solution_id, comment_obj) {
+          if (!solution_id){
+            comments_url = '/problems/' + problem_id + '/comments/new/';
+
+          }
+          else {
+            comments_url = '/problems/' + problem_id + '/show_solution/' + solution_id + '/comments/new/'
+          }
           console.log("Sending HTTP req to ", comments_url);
           console.log("Comment obj, ", comment_obj)
           return $http({

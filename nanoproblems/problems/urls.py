@@ -11,8 +11,8 @@ urlpatterns = [
     url(r'^(?P<problem_id>[0-9]+)/vote/(?P<vote>[0-9]+)$', views.vote_problem, name='vote_problem'),
     url(r'problems_json/(?P<problem_id>[0-9]+)$', views.problem_as_json, name='problem_as_json'),
     url(r'problems_json/all/$', views.problems_json, name='problems_json'),
-    url(r'^(?P<problem_id>[0-9])+/comments/all/$', views.comments_as_json, name='comments_as_json'),
-    url(r'^(?P<problem_id>[0-9])+/comments/new/$', views.new_problem_comment, name='new_problem_comment'),
+    url(r'^(?P<problem_id>[0-9]+)/comments/all/$', views.comments_as_json, name='comments_as_json'),
+    url(r'^(?P<problem_id>[0-9]+)/comments/new/$', views.new_problem_comment, name='new_problem_comment'),
 
     # url(r'^(?P<problem_id>[0-9]+)/delete_problem', views.delete_problem, name='delete_problem'),
     url(r'^(?P<problem_id>[0-9]+)/edit_comment/(?P<comment_id>[0-9]+)$', views.edit_comment_from_problem, name='edit_comment_from_problem'),
@@ -24,10 +24,13 @@ urlpatterns = [
     url(r'^(?P<problem_id>[0-9]+)/show_solution/(?P<solution_id>[0-9]+)/edit_comment/(?P<comment_id>[0-9]+)$', views.edit_comment_from_solution, name='edit_comment_from_solution'),
     url(r'^(?P<problem_id>[0-9]+)/show_solution/(?P<solution_id>[0-9]+)/delete_comment/(?P<comment_id>[0-9]+)$', views.delete_comment_from_solution, name='delete_comment_from_solution'),
     url(r'^(?P<problem_id>[0-9]+)/show_solution/(?P<solution_id>[0-9]+)/add_new_comment/', views.add_comment_to_solution, name='add_comment_to_solution'),
+    url(r'^(?P<problem_id>[0-9]+)/show_solution/(?P<solution_id>[0-9]+)/comments/all/$', views.comments_as_json, name='comments_as_json'),
+    url(r'^(?P<problem_id>[0-9]+)/comments/new/(?P<solution_id>[0-9]+)/comments/new/$', views.new_problem_comment, name='new_problem_comment'),
+
     url(r'^(?P<problem_id>[0-9]+)/show_solution/(?P<solution_id>[0-9]+)/vote/(?P<vote>[0-9]+)', views.vote_solution, name='vote_solution'),
     url(r'^(?P<problem_id>[0-9]+)/show_solution/(?P<solution_id>[0-9]+)', views.show_solution, name='show_solution'),
     url(r'solutions_json/(?P<solution_id>[0-9]+)$', views.solution_as_json, name='solution_as_json'),
-    url(r'solutions_json/all$', views.solutions_json, name='solutionss_json'),
+    url(r'solutions_json/all$', views.solutions_json, name='solutions_json'),
 
     # url(r'^problems_JSON/$', views.problems_JSON, name='problems_JSON'),
     # url(r'^query_problems/$', views.query_problems, name='query_problems'),
