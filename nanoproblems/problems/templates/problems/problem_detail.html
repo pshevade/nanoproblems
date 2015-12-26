@@ -118,7 +118,7 @@
   </div>
 
 <div class="container" id="comments">
-    <div class="container" ng-controller="CommentsController" ng-init="initComments({{problem.id}})">
+    <div class="container" ng-controller="CommentsController" ng-init="initComments({{problem.id}}, 0)">
       <div class="row">
         <div class="col-xs-12">
           <h4>Comments</h4>
@@ -152,8 +152,12 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-xs-12 col-md-6">
+              <div class="col-xs-6 col-md-6">
                   [[ comment.fields.user[0] ]]
+              </div>
+              <div class="col-xs-6 col-md-6 text-right" ng-show="is_user_who_commented('{{user.email}}', comment)">
+                  <img ng-click="deleteComment({{problem.id}}, comment.pk)" src="{% static "images/delete-black-1x.png" %}" alt="Delete"/>
+
               </div>
             </div>
           </div>

@@ -352,6 +352,7 @@ def get_comments_as_json(solution_id=None, problem_id=None):
                                                 comments_list,
                                                 fields=('content',
                                                         'posted',
-                                                        'user'),
+                                                        'user',
+                                                        'pk'),
                                                 use_natural_foreign_keys=True)
     return json.dumps(comments_serialized)

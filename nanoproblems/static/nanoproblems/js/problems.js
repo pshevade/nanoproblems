@@ -15,17 +15,26 @@
 
   app.controller("CommentsController", function($scope, CommentsService, $sce){
         $scope.comments=[]
-        $scope.problem_id = -1;
-        $scope.solution_id = -1;
+        $scope.problem_id = 0;
+        $scope.solution_id = 0;
         $scope.comment = {}
 
         $scope.renderHtml = function (htmlCode){
           return $sce.trustAsHtml(htmlCode);
         };
 
+        $scope.is_user_who_commented = function(email, comment){
+          if (comment.fields.user[0] == email){
+            return true
+          }
+          else{
+            return false
+          }
+        }
+
         $scope.getComments = function() {
             console.log("Inside getComments, and the problem_id is: ", $scope.problem_id)
-            CommentsService.getComments($scope.problem_id, null).then(function(dataResponse){
+            CommentsService.getComments($scope.problem_id, $scope.solution_id).then(function(dataResponse){
                 console.log("Raw fetch data: ", JSON.parse(dataResponse.data)[0])
                 $scope.comments = JSON.parse(dataResponse.data)
                 console.log("The comments var is: ", $scope.comments)
@@ -39,7 +48,7 @@
             // $scope.comment.user_email = user_email
             console.log("inside postComment: ", $scope.comment, problem_id, user_email)
 
-            CommentsService.postComment($scope.problem_id, null, $scope.comment, "problems").then(function(dataResponse){
+            CommentsService.postComment($scope.problem_id, $scope.solution_id, $scope.comment, "problems").then(function(dataResponse){
                 console.log("We posted!")
                 console.log("here is the response: ", dataResponse.data)
                 $scope.getComments()
@@ -47,14 +56,28 @@
             })
         };
 
-        $scope.initComments = function(problem_id) {
+        $scope.deleteComment = function(comment_id, problem_id){
+          console.log("inside deleteComment: ", comment_id, problem_id)
+
+        }
+
+        $scope.initComments = function(problem_id, solution_id) {
           console.log("init comments! the problem id is: ", problem_id)
 
           console.log("inside if statement.")
-          $scope.problem_id = problem_id
-          $scope.getComments()
-          return true;
-
+          if (problem_id > 0){
+            $scope.problem_id = problem_id
+          }
+          if (solution_id > 0){
+            $scope.solution_id = solution_id
+          }
+          if ($scope.problem_id > 0 | $scope.solution_id > 0){
+            $scope.getComments()
+            return true;
+          }
+          else{
+            return false;
+          }
         };
 
     });
@@ -211,6 +234,24 @@
           }
           else {
             comments_url = '/problems/' + problem_id + '/show_solution/' + solution_id + '/comments/new/'
+          }
+          console.log("Sending HTTP req to ", comments_url);
+          console.log("Comment obj, ", comment_obj)
+          return $http({
+              method  : 'POST',
+              url     : comments_url,
+              data    : comment_obj,
+              headers : {'Content-Type': 'application/json'},
+          });
+      };
+
+      this.deleteComment = function(problem_id, solution_id, comment_id) {
+          if (!solution_id){
+            comments_url = '/problems/' + problem_id + '/comments/' + comment_id +'/delete/';
+
+          }
+          else {
+            comments_url = '/problems/' + problem_id + '/show_solution/' + solution_id + '/comments/' + comment_id +'/delete/'
           }
           console.log("Sending HTTP req to ", comments_url);
           console.log("Comment obj, ", comment_obj)

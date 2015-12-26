@@ -204,7 +204,7 @@ def add_comment_to_problem(request, problem_id):
 
 
 @is_authenticated()
-def new_problem_comment(request, problem_id):
+def new_comment_problem(request, problem_id):
     print "inside new_problem_comment."
     print "Here is the POST: ", request.POST.get('content')
     print "Here is the data: ", json.loads(request.body)['content']
@@ -212,7 +212,20 @@ def new_problem_comment(request, problem_id):
     problem = logic.get_problem(problem_id)
     if request.method == 'POST':
         logic.new_comment_problem(request, problem)
-    return HttpResponseRedirect('/problems/' + str(problem_id))
+    # return HttpResponseRedirect('/problems/' + str(problem_id))
+    return HttpResponse(status=200)
+
+
+@is_authenticated()
+def new_comment_solution(request, problem_id, solution_id):
+    print "inside new_comment_solution."
+    print "Here is the POST: ", request.POST.get('content')
+    print "Here is the data: ", json.loads(request.body)['content']
+    print "Is is ajax? ", request.is_ajax()
+    solution = logic.get_solution(solution_id)
+    if request.method == 'POST':
+        logic.new_comment_solution(request, solution)
+    return HttpResponse(status=200)
 
 
 @is_authenticated()
@@ -271,6 +284,12 @@ def delete_comment_from_solution(request, problem_id, solution_id, comment_id):
 
 
 @is_authenticated()
-def comments_as_json(request, problem_id):
+def problem_comments_as_json(request, problem_id):
     return HttpResponse(logic.get_comments_as_json(problem_id=problem_id),
+                        content_type='application/json')
+
+
+@is_authenticated()
+def solution_comments_as_json(request, problem_id, solution_id):
+    return HttpResponse(logic.get_comments_as_json(solution_id=solution_id),
                         content_type='application/json')
