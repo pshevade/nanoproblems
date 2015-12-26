@@ -5,7 +5,8 @@
     	$httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
     	$httpProvider.defaults.xsrfCookieName = 'csrftoken';
     	$httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-  	}]);
+  	  $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+    }]);
 
 	app.config(['$interpolateProvider', function($interpolateProvider){
         $interpolateProvider.startSymbol('[[');
@@ -33,13 +34,16 @@
         };
 
         $scope.postComment = function(problem_id, user_email) {
-            console.log("Called postComment!")
-            console.log("inside postComment: ", $comment, problem_id, user_email)
-            // VoteService.postProblemComment($scope.problem_id, comment, user_email).then(function(dataResponse){
-            //     console.log("We posted!")
-            //     console.log("here is the response: ", dataResponse.data)
-            //     $scope.getComments()
-            // })
+            // $scope.comment.problem_id = problem_id
+            // $scope.comment.user_email = user_email
+            console.log("inside postComment: ", $scope.comment, problem_id, user_email)
+
+            CommentsService.postProblemComment($scope.problem_id, $scope.comment).then(function(dataResponse){
+                console.log("We posted!")
+                console.log("here is the response: ", dataResponse.data)
+                $scope.getComments()
+                $scope.comment = {}
+            })
         };
 
         $scope.initComments = function(problem_id) {
@@ -194,10 +198,10 @@
       }
 
 
-      this.postProblemComment = function(id, comment, user_email) {
+      this.postProblemComment = function(id, comment_obj) {
           comments_url = '/problems/' + id + '/comments/new/';
           console.log("Sending HTTP req to ", comments_url);
-          console.log("Comment obj, ", comment)
+          console.log("Comment obj, ", comment_obj)
           return $http({
               method  : 'POST',
               url     : comments_url,

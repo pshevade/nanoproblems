@@ -205,7 +205,13 @@ def add_comment_to_problem(request, problem_id):
 
 @is_authenticated()
 def new_problem_comment(request, problem_id):
-    print "Here is the json: ", request.get_json()
+    print "inside new_problem_comment."
+    print "Here is the POST: ", request.POST.get('content')
+    print "Here is the data: ", json.loads(request.body)['content']
+    print "Is is ajax? ", request.is_ajax()
+    problem = logic.get_problem(problem_id)
+    if request.method == 'POST':
+        logic.new_comment_problem(request, problem)
     return HttpResponseRedirect('/problems/' + str(problem_id))
 
 

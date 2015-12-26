@@ -127,7 +127,7 @@
       <div class="panel panel-no-outline text-left">
        <div class="panel-body" style="border=0">
         <div class="row">
-           <form name="commentForm" method='post' ng-submit="postComment({{problem.id}}, {{user.email}})" class="form-horizontal" autocomplete="off">
+           <form method='post' ng-submit="postComment({{problem.id}},'{{user.email}}')" class="form-horizontal" novalidate>
             {% csrf_token %}
             <div class="col-xs-12 col-md-2">
               <p>Leave a comment</p>
