@@ -253,6 +253,7 @@ def delete_comment_problem(request, problem, comment_id):
             problem.comments.remove(comment)
         else:
             return False
+        problem.save()
         comments_logic.delete_comment(request, comment)
         return True
     else:
@@ -292,9 +293,12 @@ def delete_comment_solution(request, solution, comment_id):
     comment = comments_logic.get_comment(comment_id)
     if comment:
         if comment in solution.comments.all():
+            print "Removing solution's comment. ", comment.content
             solution.comments.remove(comment)
+
         else:
             return False
+        solution.save()
         comments_logic.delete_comment(request, comment)
         return True
     else:

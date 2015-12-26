@@ -127,7 +127,7 @@
       <div class="panel panel-no-outline text-left">
        <div class="panel-body" style="border=0">
         <div class="row">
-           <form method='post' ng-submit="postComment({{problem.id}},'{{user.email}}')" class="form-horizontal" novalidate>
+           <form method='post' ng-submit="postComment()" class="form-horizontal" novalidate>
             {% csrf_token %}
             <div class="col-xs-12 col-md-2">
               <p>Leave a comment</p>
@@ -156,7 +156,7 @@
                   [[ comment.fields.user[0] ]]
               </div>
               <div class="col-xs-6 col-md-6 text-right" ng-show="is_user_who_commented('{{user.email}}', comment)">
-                  <img ng-click="deleteComment({{problem.id}}, comment.pk)" src="{% static "images/delete-black-1x.png" %}" alt="Delete"/>
+                  <img ng-click="deleteComment(comment.pk)" src="{% static "images/delete-black-1x.png" %}" alt="Delete"/>
 
               </div>
             </div>

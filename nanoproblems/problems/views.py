@@ -245,7 +245,7 @@ def edit_comment_from_problem(request, problem_id, comment_id):
 def delete_comment_from_problem(request, problem_id, comment_id):
     print "inside delete_comment_from_problem"
     problem = Problem.objects.get(pk=problem_id)
-    if request.method == 'GET':
+    if request.method == 'POST':
         logic.delete_comment_problem(request, problem, comment_id)
     #return problem_detail(request, problem_id)
     return HttpResponseRedirect('/problems/' + str(problem_id))
@@ -277,8 +277,9 @@ def edit_comment_from_solution(request, problem_id, solution_id, comment_id):
 
 @is_authenticated()
 def delete_comment_from_solution(request, problem_id, solution_id, comment_id):
+    print "Inside delete_comment_from_solution."
     solution = logic.get_solution(solution_id)
-    if request.method == 'GET':
+    if request.method == 'POST':
         logic.delete_comment_solution(request, solution, comment_id)
     return HttpResponseRedirect('/problems/' + str(problem_id) + '/show_solution/' + str(solution_id))
 

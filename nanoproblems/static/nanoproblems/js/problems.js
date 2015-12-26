@@ -35,7 +35,7 @@
         $scope.getComments = function() {
             console.log("Inside getComments, and the problem_id is: ", $scope.problem_id)
             CommentsService.getComments($scope.problem_id, $scope.solution_id).then(function(dataResponse){
-                console.log("Raw fetch data: ", JSON.parse(dataResponse.data)[0])
+                console.log("Raw fetch data: ", JSON.parse(dataResponse.data))
                 $scope.comments = JSON.parse(dataResponse.data)
                 console.log("The comments var is: ", $scope.comments)
                 // $scope.likes = dataResponse.data.Item.likes;
@@ -43,12 +43,12 @@
             });
         };
 
-        $scope.postComment = function(problem_id, user_email) {
+        $scope.postComment = function() {
             // $scope.comment.problem_id = problem_id
             // $scope.comment.user_email = user_email
-            console.log("inside postComment: ", $scope.comment, problem_id, user_email)
+            console.log("inside postComment: ", $scope.comment)
 
-            CommentsService.postComment($scope.problem_id, $scope.solution_id, $scope.comment, "problems").then(function(dataResponse){
+            CommentsService.postComment($scope.problem_id, $scope.solution_id, $scope.comment).then(function(dataResponse){
                 console.log("We posted!")
                 console.log("here is the response: ", dataResponse.data)
                 $scope.getComments()
@@ -56,9 +56,14 @@
             })
         };
 
-        $scope.deleteComment = function(comment_id, problem_id){
-          console.log("inside deleteComment: ", comment_id, problem_id)
-
+        $scope.deleteComment = function(comment_id){
+          console.log("inside deleteComment: ", comment_id)
+          CommentsService.deleteComment($scope.problem_id, $scope.solution_id, comment_id).then(function(dataResponse){
+                console.log("We deleted!")
+                // console.log("here is the response: ", dataResponse.data)
+                $scope.getComments()
+                $scope.comment = {}
+            })
         }
 
         $scope.initComments = function(problem_id, solution_id) {
@@ -246,6 +251,7 @@
       };
 
       this.deleteComment = function(problem_id, solution_id, comment_id) {
+          console.log("inside deleteComment: ", problem_id, solution_id, comment_id)
           if (!solution_id){
             comments_url = '/problems/' + problem_id + '/comments/' + comment_id +'/delete/';
 
@@ -254,11 +260,9 @@
             comments_url = '/problems/' + problem_id + '/show_solution/' + solution_id + '/comments/' + comment_id +'/delete/'
           }
           console.log("Sending HTTP req to ", comments_url);
-          console.log("Comment obj, ", comment_obj)
           return $http({
               method  : 'POST',
               url     : comments_url,
-              data    : comment_obj,
               headers : {'Content-Type': 'application/json'},
           });
       };
