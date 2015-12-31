@@ -16,6 +16,7 @@ class User(models.Model):
     user_key = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     nanodegree = models.CharField(max_length=15,
                                   choices=NANODEGREE_CHOICES, default='Developer')
+    is_admin = models.BooleanField(default=False)
 
     def __unicode__(self):
         """ Return the username to better id the object. """

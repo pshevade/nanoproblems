@@ -17,14 +17,22 @@ def is_admin():
     def decorator(func):
         @wraps(func)
         def wrapper(request, *args, **kwargs):
-            if 'email' in request.session:
-                if '@knowlabs.com' in request.session['email'] or '@udacity.com' in request.session['email']:
-                    return func(request, *args, **kwargs)
-                else:
-                    print "Not an admin!"
-                    return False
+            if check_if_admin(request):
+                return func(request, *args, **kwargs)
+            else:
+                return False
         return wrapper
     return decorator
+
+
+def check_if_admin(request):
+    if 'email' in request.session:
+        print "inside first loop in is_admin"
+        if '@knowlabs.com' in request.session['email'] or '@udacity.com' in request.session['email']:
+            return True
+        else:
+            print "Not an admin!"
+    return False
 
 
 def is_authenticated():
@@ -33,7 +41,9 @@ def is_authenticated():
         @wraps(func)
         def wrapper(request, *args, **kwargs):
             if 'email' in request.session:
-                return func(request, *args, **kwargs)
+                user = User.objects.get(email=request.session['email'])
+                if user:
+                    return func(request, *args, **kwargs)
             else:
                 # find the namespace, convert to string
                 namespace = func.__module__.split('.')[0]
@@ -44,28 +54,16 @@ def is_authenticated():
     return decorator
 
 
-def is_authorized():
-    """ Decorator to check if the user is authorized
-        for performing one action. """
-    def decorator(func):
-        @wraps(func)
-        def wrapper(request, *args, **kwargs):
-            print "the args: ", args
-            print "the kwargs: ", kwargs
-            for a in args:
-                print a
-                if 'user' in dir(a):
-                    print "the argument is: ", a
-                    user = a.__getattribute__('user')
-                    print "the user object is: ", user
-                    if user.email == request.session['email']:
-                        return func(request, *args, **kwargs)
-                    else:
-                        print "not authorized for ", func.__name__
-                else:
-                    print "user not an attribute in any of the arguments."
-        return wrapper
-    return decorator
+def is_authorized(model, email):
+    if 'user' in dir(model):
+        print "the model argument is: ", model
+        user = model.__getattribute__('user')
+        print "the user for this argument is: ", user.email
+        print "the user in session is: ", email
+        session_user = User.objects.get(email=email)
+        if user.email == email or session_user.is_admin:
+            return True
+    return False
 
 
 def get_user(request, user_key=None):

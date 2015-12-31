@@ -5,7 +5,7 @@ from .forms import UserForm
 from .models import User
 from .models import NANODEGREE_CHOICES
 import logic
-from .logic import is_authenticated, logout_user
+from .logic import is_authenticated, logout_user, is_admin
 
 
 def logout(request):
@@ -53,6 +53,7 @@ def edit(request):
 
 
 def login(request):
+    print "Inside login"
     """ Authenticate with Udacity using OpenID """
     if not hasattr(login, 'redirect_on_return'):
         login.redirect_on_return = '/problems/'
@@ -67,6 +68,14 @@ def login(request):
             user = User(email=request.session['email'],
                         nickname=request.session['name'])
             user.save()
-        else:
-            pass
+        set_as_admin(request)
         return HttpResponseRedirect(login.redirect_on_return)
+
+
+@is_admin()
+def set_as_admin(request):
+    user = User.objects.get(email=request.session['email'])
+    print "Setting user to admin, email is: ", user.email
+    user.is_admin = True
+    user.save()
+    return user

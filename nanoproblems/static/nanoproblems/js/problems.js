@@ -23,7 +23,11 @@
           return $sce.trustAsHtml(htmlCode);
         };
 
-        $scope.is_user_who_commented = function(email, comment){
+        $scope.can_delete_comment = function(email, comment, is_admin){
+          console.log("Here is the is_admin flag: ", is_admin)
+          if (is_admin) {
+            return true
+          }
           if (comment.fields.user[0] == email){
             return true
           }

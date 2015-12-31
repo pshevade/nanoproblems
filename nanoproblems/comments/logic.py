@@ -37,7 +37,7 @@ def new_comment(request):
     return comment
 
 
-@is_authorized()
+# @is_authorized()
 def delete_comment(request, comment):
     """ Delete a given comment.
         Return False if not authorized.
@@ -49,7 +49,7 @@ def delete_comment(request, comment):
         return False
 
 
-@is_authorized()
+# @is_authorized()
 def edit_comment(request, comment):
     """ Edit a given comment.
         Return False if not authorized or if form errors.

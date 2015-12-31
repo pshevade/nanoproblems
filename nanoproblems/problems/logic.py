@@ -45,7 +45,7 @@ def get_solution_details(request, problem_id, solution_id):
     return {'solution': solution, 'problem': problem, 'user': user, 'comments_list':comments_list}
 
 
-@is_authorized()
+# @is_authorized()
 def edit_solution(request, solution):
     form = SolutionForm(request.POST, instance=solution)
     if form.is_valid():
@@ -57,7 +57,7 @@ def edit_solution(request, solution):
         return False
 
 
-@is_authorized()
+# @is_authorized()
 def delete_solution(request, solution):
     try:
         solution.delete()
@@ -206,14 +206,15 @@ def get_problems_json():
 def get_problem_details(request, problem_id):
     problem = get_problem(problem_id)
     solutions_list = Solution.objects.filter(problem=problem)# need to add a way to get all answers to all questions here...
+    user = User.objects.get(email=request.session['email'])
     comments_list = []
     print "The solutions list is: ", solutions_list
     for comment in problem.comments.order_by('-posted'):
         comment.content = markdown.markdown(comment.content, extensions=['markdown.extensions.fenced_code'])
         comments_list.append(comment)
-    markable = get_true_if_admin(request)
+
     print "problem is marked on: ", problem.marked
-    return {'problem': problem, 'user': User.objects.get(email=request.session['email']), 'solutions_list':solutions_list, 'comments_list': comments_list, 'markable':markable}
+    return {'problem': problem, 'user': user, 'solutions_list': solutions_list, 'comments_list': comments_list}
 
 
 def new_comment_problem(request, problem):
@@ -228,7 +229,7 @@ def new_comment_problem(request, problem):
         return False
 
 
-@is_authorized()
+# @is_authorized()
 def edit_comment_problem(request, problem, comment_id):
     """ Edit comment.
     """
@@ -244,11 +245,11 @@ def edit_comment_problem(request, problem, comment_id):
         return False
 
 
-@is_authorized()
+# @is_authorized()
 def delete_comment_problem(request, problem, comment_id):
     print "inside logic deletecommentproblem"
     comment = comments_logic.get_comment(comment_id)
-    if comment:
+    if comment and is_authorized(comment, request.session['email']):
         if comment in problem.comments.all():
             problem.comments.remove(comment)
         else:
@@ -272,7 +273,7 @@ def new_comment_solution(request, solution):
         return False
 
 
-@is_authorized()
+# @is_authorized()
 def edit_comment_solution(request, solution, comment_id):
     """ Edit comment.
     """
@@ -288,10 +289,10 @@ def edit_comment_solution(request, solution, comment_id):
         return False
 
 
-@is_authorized()
+# @is_authorized()
 def delete_comment_solution(request, solution, comment_id):
     comment = comments_logic.get_comment(comment_id)
-    if comment:
+    if comment and is_authorized(comment, request.session['email']):
         if comment in solution.comments.all():
             print "Removing solution's comment. ", comment.content
             solution.comments.remove(comment)
