@@ -187,7 +187,7 @@ def show_solution(request, problem_id, solution_id):
     print "problem_id is: ", problem_id
     print "solution_id is: ", solution_id
     context = logic.get_solution_details(request, problem_id, solution_id)
-    return render(request, 'problems/show_solution.html', context)
+    return render(request, 'problems/solution_detail.html', context)
 
 
 @is_authenticated()

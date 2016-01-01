@@ -59,12 +59,15 @@ def edit_solution(request, solution):
 
 # @is_authorized()
 def delete_solution(request, solution):
-    try:
-        solution.delete()
-        return True
-    except Exception, e:
-        print e
-        return False
+    if is_authorized(solution, request.session['email']):
+        for comment in solution.comments.all():
+            delete_comment_solution(request, solution, comment.id)
+        try:
+            solution.delete()
+            return True
+        except Exception, e:
+            print e
+            return False
 
 
 def get_solution(solution_id):

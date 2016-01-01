@@ -1,47 +1,48 @@
-
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Nanoproblems</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"/>
+{% extends "problems/base.html" %}
+{% block content %}
   {% load staticfiles %}
-  <link rel="stylesheet" type="text/css" href="{% static "css/bobblehead.css" %}"/>
-</head>
 
-<body class="container">
-  <div class="row pad-10 margin-top-20 highlight">
-    <div class="col-md-12">
-      <a href="/problems/{{problem_id}}/show_solution/{{solution.id}}">
-        <img src="{% static "images/arrow-back-white-1x.png" %}" alt="Back to Problems"/>
-        Cancel
-      </a>
+  <section class="jumbotron-section">
+    <div class="container">
+      <div class="jumbotron">
+        <div class="fluid-container">
+          <div class="row">
+            <div class="col-xs-12">
+            <h3 class="section-title" align="center">Delete this solution? </h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+<div class="panel panel-no-outline">
+  <div class="panel-body" style="border=0">
+    <div class="row" align="center">
+      <form class="container" method="post" action="{% url 'problems:delete_solution' problem_id solution.id %}"  autocomplete="off">
+      {% csrf_token %}
+
+
+        <div class="form-group row text-center">
+          <div class="col-xs-12">
+            <h4>{{solution.title}}</h4>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-xs-12">
+            {{solution.description|safe}}
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-xs-12">
+            <button type="submit" class="btn btn-default">Delete</button>
+          </div>
+        </div>
+      </form>
     </div>
   </div>
-  <p>
-  <form action="{% url 'problems:delete_solution' problem_id solution.id %}" method="post" class="form-horizontal" autocomplete="off">
-    {% csrf_token %}
+</div>
 
-    <div class="form-group pad-top-20">
-      <div class="col-md-4">
-        {{solution.title}}
-      </div>
-    </div>
+{% endblock %}
 
-  <div class="form-group">
-      <div class="col-md-4">
-        {{solution.description|safe}}
-      </div>
-  </div>
-    
-
-
-    <div class="form-group">
-      <div class="col-md-offset-2 col-md-4">
-        <button type="submit" class="btn btn-default">Delete</button>
-      </div>
-    </div>
-  </form>
-</p>
-</body>
-</html>

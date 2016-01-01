@@ -12,7 +12,7 @@
             {% if user.email == solution.user.email %}
                   <a href=""><img src="{% static "images/edit-black-1x.png" %}" alt="Edit"/>
                   </a>
-                  <a href=""><img src="{% static "images/delete-black-1x.png" %}" alt="Delete"/>
+                  <a href="{% url 'problems:delete_solution' solution.problem.id solution.id %}"><img src="{% static "images/delete-black-1x.png" %}" alt="Delete"/>
                   </a>
                 {% endif %}
             </h2>
