@@ -56,14 +56,18 @@
                       <h4 class="problem-title">{{problem.title}}</h4>
                     </a>
                   </div>
+                  <div class="col-xs-12 col-md-6 text-right">
+                    <button class="score-button">{{problem.likes}}<i class="fa fa-thumbs-o-up score-icon"></i></button>
+                    <button class="score-button">{{problem.dislikes}}<i class="fa fa-thumbs-o-down score-icon"></i></button>
+                  </div>
                 </div>
                 <div class="row">
-                  <div class="col-xs-12">
+                  <div class="col-xs-12 col-md-6">
                     {{ problem.description | safe }}
                   </div>
                 </div>
                 <div class="row">
-                  <div class="col-xs-12">
+                  <div class="col-xs-12 col-md-6">
                     <ul class="tags list-inline">
                       {% for tag in problem.tags.all %}
                         <li class="tag">{{ tag.tag_name }}</li>
@@ -72,12 +76,13 @@
                   </div>
                 </div>
                 <div class="row">
-                  <div class="col-xs-6">
+                  <div class="col-xs-12 col-md-6">
                     <h4 class="problem-difficulty">{{ problem.difficulty }}</h4>
                   </div>
-                  <div class="col-xs-6 text-right">
-                    <button class="score-button">{{problem.likes}}<i class="fa fa-thumbs-o-up score-icon"></i></button>
-                    <button class="score-button">{{problem.dislikes}}<i class="fa fa-thumbs-o-down score-icon"></i></button>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12 col-md-6">
+                    <h4 class="problem-difficulty">{{ problem.category }}</h4>
                   </div>
                 </div>
               </div>

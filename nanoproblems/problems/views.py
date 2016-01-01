@@ -39,7 +39,10 @@ def problems_list(request):
 @is_authenticated()
 def problem_detail(request, problem_id):
     """ Return the problem details by problem_id. """
-    context = logic.get_problem_details(request, problem_id)
+    try:
+        context = logic.get_problem_details(request, problem_id)
+    except Exception as e:
+        return HttpResponseRedirect('/problems/')
     return render(request, 'problems/problem_detail.html', context)
 
 
@@ -83,7 +86,11 @@ def new_problem(request):
 @is_authenticated()
 def delete_problem(request, problem_id):
     user = User.objects.get(email=request.session['email'])
-    problem = logic.get_problem(problem_id)
+    try:
+        problem = logic.get_problem(problem_id)
+    except Exception as e:
+        print e
+        return HttpResponseRedirect('/problems/')
     if request.method == 'POST':
         print "inside post"
         logic.delete_problem(request, problem)
@@ -146,7 +153,7 @@ def new_solution(request, problem_id):
         solution_form = SolutionForm()
         return render(request, 'problems/new_solution.html',
                       {'form': solution_form,
-                       'problem_id': problem_id,
+                       'problem': problem,
                        'user': user})
 
 
@@ -170,7 +177,11 @@ def edit_solution(request, problem_id, solution_id):
 @is_authenticated()
 def delete_solution(request, problem_id, solution_id):
     user = User.objects.get(email=request.session['email'])
-    solution = logic.get_solution(solution_id)
+    try:
+        solution = logic.get_solution(solution_id)
+    except Exception as e:
+        print e
+        return HttpResponseRedirect('/problems/' + str(problem_id))
     if request.method == 'POST':
         print "inside post"
         logic.delete_solution(request, solution)
@@ -186,7 +197,10 @@ def delete_solution(request, problem_id, solution_id):
 def show_solution(request, problem_id, solution_id):
     print "problem_id is: ", problem_id
     print "solution_id is: ", solution_id
-    context = logic.get_solution_details(request, problem_id, solution_id)
+    try:
+        context = logic.get_solution_details(request, problem_id, solution_id)
+    except Exception as e:
+        return HttpResponseRedirect('/problems/' + str(problem_id))
     return render(request, 'problems/solution_detail.html', context)
 
 

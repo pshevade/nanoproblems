@@ -1,48 +1,78 @@
-<!DOCTYPE html>
-
-<html>
-<head>
-  <title>Nanoproblems</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"/>
+{% extends "problems/base.html" %}
+{% block content %}
   {% load staticfiles %}
-  <link rel="stylesheet" type="text/css" href="{% static "css/bobblehead.css" %}"/>
-</head>
 
-<body class="container">
-	<div class="row pad-10 margin-top-20 highlight">
-		<div class="col-md-12">
-			<a href="{% url 'problems:problem_detail' problem_id %}">
-				<img src="{% static "images/arrow-back-white-1x.png" %}" alt="Back to Problem"/>
-				Cancel
-			</a>
-		</div>
-	</div>
 
-	<form action="{% url 'problems:new_solution' problem_id %}" method="post" class="form-horizontal" autocomplete="off">
-		{% csrf_token %}
+  <section class="jumbotron-section">
+    <div class="container">
+      <div class="jumbotron">
+        <div class="fluid-container">
+          <div class="row">
+            <div class="col-xs-12">
+            <h2>Add solution </h2>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-	<div class="form-group pad-top-20">
+
+  <section class="jumbotron-section">
+    <div class="container">
+      <div class="jumbotron">
+        <div class="fluid-container">
+          <div class="row">
+            <h2 class="section-title">
+              {{problem.title}} {% if problem.marked %}<img src="{% static 'images/udacity-logo-small.png' %}">{% endif %}
+              </h2>
+          </div>
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="problem-description">
+                <div class="row">
+                  <p>{{problem.description|safe}}</p>
+                </div>
+                <div class="row">
+                  <ul class="list-unstyled">
+                    {% for tag in problem.tags.all %}
+                        <li class="badge">{{ tag.tag_name }}</li>
+                    {% endfor %}
+                    </ul>
+                </div>
+                <hr>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <form class="container" method="post" action="{% url 'problems:new_solution' problem.id %}">
+    {% csrf_token %}
+     <div class="form-group row">
       <label for="id_title" class="col-md-2 control-label">Title</label>
       <div class="col-md-4">
         <input name='title' id='id_title' type="text" class="form-control" ng-model="title" required>
       </div>
     </div>
 
-	<div class="form-group">
+    <div class="form-group row">
       <label for="id_description" class="col-md-2 control-label">Description</label>
       <div class="col-md-4">
         <textarea class="form-control" id="id_description" name="description" rows="3" required></textarea>
       </div>
     </div>
-    
-	<div class="form-group">
-	  <div class="col-md-offset-2 col-md-4">
-	    <button type="submit" class="btn btn-default">Submit</button>
-	  </div>
-	</div>
-	</form>
 
-</body>
-</html>
+    <div class="form-group row">
+      <div class="col-md-offset-2 col-md-4">
+        <button type="submit" class="btn btn-default">Submit</button>
+      </div>
+    </div>
+  </form>
+
+{% endblock %}
+
 
