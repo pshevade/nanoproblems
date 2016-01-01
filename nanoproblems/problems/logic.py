@@ -88,6 +88,18 @@ def get_problem(problem_id):
     return False
 
 
+def delete_problem(request, problem):
+    if is_authorized(problem, request.session['email']):
+        for comment in problem.comments.all():
+            delete_comment_problem(request, problem, comment.id)
+        try:
+            problem.delete()
+            return True
+        except Exception, e:
+            print e
+    return False
+
+
 def vote_on_problem(request, problem, vote):
 
     try:

@@ -80,6 +80,20 @@ def new_problem(request):
     return render(request, 'problems/new_problem.html', {'form': form, 'user':user})
 
 
+@is_authenticated()
+def delete_problem(request, problem_id):
+    user = User.objects.get(email=request.session['email'])
+    problem = logic.get_problem(problem_id)
+    if request.method == 'POST':
+        print "inside post"
+        logic.delete_problem(request, problem)
+        return HttpResponseRedirect('/problems/')
+    else:
+        return render(request, 'problems/delete_problem.html',
+                      {'problem': problem,
+                       'user': user})
+
+
 @is_admin()
 @is_authenticated()
 def mark_problem(request, problem_id):

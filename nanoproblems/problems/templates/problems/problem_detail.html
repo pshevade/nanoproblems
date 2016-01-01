@@ -8,20 +8,18 @@
           <div class="row">
             <h2>
               {{problem.title}} {% if problem.marked %}<img src="{% static 'images/udacity-logo-small.png' %}">{% endif %}
-                {% if user.email == problem.user.email or user.is_admin == True %}
-                  <a href=""><img src="{% static "images/edit-black-1x.png" %}" alt="Edit"/>
-                  </a>
-                  <a href=""><img src="{% static "images/delete-black-1x.png" %}" alt="Delete"/>
-                  </a>
-                {% endif %}
               {% if user.is_admin == True and problem.marked == None %}
-                 <a href="{% url 'problems:mark_problem' problem.id%}">
+                 <a href="{% url 'problems:mark_problem' problem.id %}">
                    <img src="{% static "images/udacity-icon.png" %}" alt="Mark"/>
                 </a>
               {% endif %}
               </h2>
-
-                <a href="#solutions"><span class="browse-text option-text">solutions<i class="fa fa-angle-down option-icon browse-icon"></i></span></a>&nbsp&nbsp
+              {% if user.email == problem.user.email or user.is_admin == True %}
+                  <p><a href=""><img src="{% static "images/edit-black-1x.png" %}" alt="Edit"/>
+                  </a>
+                  <a href="{% url 'problems:delete_problem' problem.id %}"><img src="{% static "images/delete-black-1x.png" %}" alt="Delete"/>
+                  </a></p>
+              {% endif %}
 
 
           </div>
