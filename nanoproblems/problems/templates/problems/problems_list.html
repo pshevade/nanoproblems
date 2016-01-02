@@ -14,10 +14,10 @@
               <div class="options-container">
                 <div class="options">
                   <h2 class="submit-option option-title">
-                    <a class="submit-text option-text" href="{% url 'problems:new_problem' %}">submit a problem<i class="fa fa-angle-right option-icon submit-icon"></i></a>
+                    <a class="submit-text option-text" href="{% url 'problems:new_problem' %}">submit a problem</a>
                   </h2>
                   <h2 class="browse-option option-title">
-                    <span class="browse-text option-text">or start browsing<i class="fa fa-angle-down option-icon browse-icon"></i></span>
+                    <span class="browse-text option-text"><a href="{% url 'problems:random_problem' %}">or get a random problem<i class="fa fa-angle-down option-icon browse-icon"></i></a></span>
                   </h2>
                 </div>
               </div>

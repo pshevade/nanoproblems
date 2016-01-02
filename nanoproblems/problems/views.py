@@ -17,6 +17,8 @@ import comments.logic as comments_logic
 
 import problems
 import json
+import random
+import re
 
 import bleach
 import markdown
@@ -44,6 +46,13 @@ def problem_detail(request, problem_id):
     except Exception as e:
         return HttpResponseRedirect('/problems/')
     return render(request, 'problems/problem_detail.html', context)
+
+
+@is_authenticated()
+def random_problem(request):
+    """ Return the problem details by problem_id. """
+    pids = Problem.objects.all().values_list('id', flat=True)
+    return HttpResponseRedirect('/problems/' + str(random.choice(pids)))
 
 
 @is_authenticated()
@@ -157,21 +166,22 @@ def new_solution(request, problem_id):
                        'user': user})
 
 
-@is_authenticated()
-def edit_solution(request, problem_id, solution_id):
-    user = User.objects.get(email=request.session['email'])
-    solution = logic.get_solution(solution_id)
-    if request.method == 'POST':
-        print "inside post"
-        logic.edit_solution(request, solution)
-        return HttpResponseRedirect('/problems/' + str(problem_id) + '/show_solution/' + str(solution_id))
-    else:
-        form = SolutionForm()
-        return render(request, 'problems/edit_solution.html',
-                      {'form': form,
-                       'solution': solution,
-                       'problem_id': problem_id,
-                       'user': user})
+# @is_authenticated()
+# def edit_solution(request, problem_id, solution_id):
+#     user = User.objects.get(email=request.session['email'])
+#     solution = logic.get_solution(solution_id)
+#     solution.description = re.sub('<[^<]+?>', '', solution.description)
+#     if request.method == 'POST':
+#         print "inside post"
+#         logic.edit_solution(request, solution)
+#         return HttpResponseRedirect('/problems/' + str(problem_id) + '/show_solution/' + str(solution_id))
+#     else:
+#         form = SolutionForm()
+#         return render(request, 'problems/edit_solution.html',
+#                       {'form': form,
+#                        'solution': solution,
+#                        'problem_id': problem_id,
+#                        'user': user})
 
 
 @is_authenticated()
@@ -256,17 +266,17 @@ def new_comment_solution(request, problem_id, solution_id):
     return HttpResponse(status=200)
 
 
-@is_authenticated()
-def edit_comment_from_problem(request, problem_id, comment_id):
-    problem = logic.get_problem(problem_id)
-    comment = comments_logic.get_comment(comment_id)
-    if request.method == 'POST':
-        comment = logic.edit_comment_problem(request, problem, comment_id)
-        return HttpResponseRedirect('/problems/' + str(problem_id))
-    else:
-        comment_form = CommentForm()
-    return render(request, 'problems/edit_comment.html',
-                  {'form': comment_form, 'problem_id': problem_id, 'comment':comment})
+# @is_authenticated()
+# def edit_comment_from_problem(request, problem_id, comment_id):
+#     problem = logic.get_problem(problem_id)
+#     comment = comments_logic.get_comment(comment_id)
+#     if request.method == 'POST':
+#         comment = logic.edit_comment_problem(request, problem, comment_id)
+#         return HttpResponseRedirect('/problems/' + str(problem_id))
+#     else:
+#         comment_form = CommentForm()
+#     return render(request, 'problems/edit_comment.html',
+#                   {'form': comment_form, 'problem_id': problem_id, 'comment':comment})
 
 
 @is_authenticated()
@@ -290,17 +300,17 @@ def add_comment_to_solution(request, problem_id, solution_id):
     return HttpResponseRedirect('/problems/' + str(problem_id) + '/show_solution/' + str(solution_id))
 
 
-@is_authenticated()
-def edit_comment_from_solution(request, problem_id, solution_id, comment_id):
-    solution = logic.get_solution(solution_id)
-    comment = comments_logic.get_comment(comment_id)
-    if request.method == 'POST':
-        comment = logic.edit_comment_solution(request, solution, comment_id)
-        return HttpResponseRedirect('/problems/' + str(problem_id) + '/show_solution/' + str(solution_id))
-    else:
-        comment_form = CommentForm()
-    return render(request, 'problems/edit_comment_solution.html',
-                  {'form': comment_form, 'problem_id':problem_id, 'solution_id': solution_id, 'comment':comment})
+# @is_authenticated()
+# def edit_comment_from_solution(request, problem_id, solution_id, comment_id):
+#     solution = logic.get_solution(solution_id)
+#     comment = comments_logic.get_comment(comment_id)
+#     if request.method == 'POST':
+#         comment = logic.edit_comment_solution(request, solution, comment_id)
+#         return HttpResponseRedirect('/problems/' + str(problem_id) + '/show_solution/' + str(solution_id))
+#     else:
+#         comment_form = CommentForm()
+#     return render(request, 'problems/edit_comment_solution.html',
+#                   {'form': comment_form, 'problem_id':problem_id, 'solution_id': solution_id, 'comment':comment})
 
 
 @is_authenticated()

@@ -13,15 +13,7 @@
                    <img src="{% static "images/udacity-icon.png" %}" alt="Mark"/>
                 </a>
               {% endif %}
-              </h2>
-              {% if user.email == problem.user.email or user.is_admin == True %}
-                  <p><a href=""><img src="{% static "images/edit-black-1x.png" %}" alt="Edit"/>
-                  </a>
-                  <a href="{% url 'problems:delete_problem' problem.id %}"><img src="{% static "images/delete-black-1x.png" %}" alt="Delete"/>
-                  </a></p>
-              {% endif %}
-
-
+            </h2>
           </div>
           <div class="row">
             <div class="col-xs-12">
@@ -29,7 +21,12 @@
                 <div class="row">
                   <p>{{problem.description|safe}}</p>
                 </div>
-
+                {% if user.email == problem.user.email or user.is_admin == True %}
+                  <!-- <a href=""><img src="{% static "images/edit-black-1x.png" %}" alt="Edit"/>
+                   --></a>
+                  <a href="{% url 'problems:delete_problem' problem.id %}"><img src="{% static "images/delete-black-1x.png" %}" alt="Delete"/>
+                  </a>
+              {% endif %}
                 <hr>
                 <div class="row">
                   <p>

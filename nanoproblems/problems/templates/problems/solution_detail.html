@@ -10,8 +10,8 @@
             <h2>
             <a href="{% url 'problems:problem_detail' problem_id=solution.problem.id %}">{{solution.problem.title}} </a> > {{solution.title}}
             {% if user.email == solution.user.email %}
-                  <a href=""><img src="{% static "images/edit-black-1x.png" %}" alt="Edit"/>
-                  </a>
+                  <!-- <a href=""><img src="{% static "images/edit-black-1x.png" %}" alt="Edit"/>
+                  </a> -->
                   <a href="{% url 'problems:delete_solution' solution.problem.id solution.id %}"><img src="{% static "images/delete-black-1x.png" %}" alt="Delete"/>
                   </a>
                 {% endif %}
