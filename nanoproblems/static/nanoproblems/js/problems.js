@@ -165,6 +165,193 @@
         };
     });
 
+    app.controller('FilterController', ['$scope', '$sce', '$http', '$window', 'TagsService', 'FilterService', function($scope, $sce, $http, $window, TagsService, FilterService){
+        // Set defaults where necessary
+        $scope.tags = []
+        $scope.searchText = '';
+        $scope.suggestions = [];
+        $scope.selectedTags = [];
+        $scope.selectedIndex = 0;
+        $scope.problems = []
+
+        $scope.renderHtml = function (htmlCode){
+          return $sce.trustAsHtml(htmlCode);
+        };
+
+        $scope.init_filter = function() {
+          console.log ("init_filter")
+          $scope.difficulty = 'ALL'
+          $scope.category = 'ALL'
+          $scope.getTags()
+          $scope.postFilter(true)
+        }
+
+        $scope.postFilter = function(all) {
+          console.log("making a filter query")
+          FilterService.postFilter($scope.category, $scope.difficulty, $scope.selectedTags, all).then(function(dataResponse){
+            $scope.problems = JSON.parse(dataResponse.data)
+            console.log("Raw fetch data: ", $scope.problems)
+          })
+        }
+
+        $scope.getTags = function() {
+            console.log("Inside getTags")
+            TagsService.getTags().then(function(dataResponse){
+                var data = JSON.parse(dataResponse.data)
+                console.log("Raw fetch data: ", data)
+
+                for (var tag in data){
+                   console.log(data[tag])
+                   $scope.tags.push(data[tag].fields['tag_name'])
+                }
+                console.log("The tags var is: ", $scope.tags)
+                // $scope.likes = dataResponse.data.Item.likes;
+                // $scope.dislikes = dataResponse.data.Item.dislikes;
+            });
+        };
+
+
+
+
+        $scope.search = function() {
+            console.log("Inside search")
+            if ($scope.searchText) {
+              searchText = $scope.searchText.toLowerCase();
+            }
+            else {
+              searchText = $scope.searchText;
+            }
+
+            $scope.suggestions.length = 0;
+            $scope.tags.forEach(suggest);
+            function suggest(value) {
+              console.log("Insie search.suggest, value is: ", value)
+                var value = value.toLowerCase();
+                console.log('Checking out conditions to push to suggestions, here is value: ', value)
+                console.log("Search text: ", $scope.searchText)
+                console.log("Value at index of search txt (should be ==0): ", value.indexOf($scope.searchText))
+                console.log("Search text length: (should be > 0): ", $scope.searchText.length )
+                console.log("last one: (should be -1): ", $scope.suggestions.indexOf(value) )
+                  if (value.indexOf($scope.searchText) === 0 && $scope.searchText.length > 0 && $scope.suggestions.indexOf(value) === -1) {
+                    console.log("Pushing to suggestsion: ", value)
+                    $scope.suggestions.push(value);
+                  }
+            }
+            $scope.selectedIndex = 0;
+        }
+
+        $scope.checkKeyDown = function(event) {
+          console.log("inside checkKeyDown")
+          if (event.keyCode === 40) { //down key, increment selectedIndex
+            event.preventDefault();
+            if ($scope.selectedIndex+1 !== $scope.suggestions.length) {
+              $scope.selectedIndex++;
+            }
+          }
+          else if (event.keyCode === 38) { //up key, decrement selectedIndex
+            event.preventDefault();
+            if ($scope.selectedIndex-1 !== -1) {
+              $scope.selectedIndex--;
+            }
+          }
+          else if (event.keyCode === 9) { //Tab (9) pressed
+            if ($scope.searchText.length > 0) {
+              event.preventDefault();
+              $scope.addToSelectedTags($scope.selectedIndex);
+              $scope.searchText = '';
+              $scope.search();
+            }
+          }
+          else if (event.keyCode === 13 || event.type == "blur") { // Enter (13) pressed
+            if ($scope.searchText && $scope.searchText.length > 0) {
+              event.preventDefault();
+              $scope.pushToSelectedTags($scope.searchText); // Force add raw data, not suggestion
+              $scope.searchText = '';
+              $scope.search();
+            }
+          }
+        }
+
+        $scope.addToSelectedTags = function(index) {
+          if ($scope.suggestions.length > 0) {
+            if ($scope.selectedTags.indexOf($scope.suggestions[index]) == -1) {
+              $scope.selectedTags.push($scope.suggestions[index]);
+            }
+          }
+          else {
+            if ($scope.selectedTags.indexOf($scope.searchText) == -1 && $scope.searchText !== '') {
+              $scope.selectedTags.push($scope.searchText);
+            }
+          }
+        }
+        $scope.pushToSelectedTags = function(tag) {
+          if ($scope.selectedTags.length < 5){
+            console.log("this is the tag to be pushed: ", tag)
+            $scope.selectedTags.push(tag);
+          }
+        }
+
+        $scope.removeTag = function(index) {
+          $scope.selectedTags.splice(index, 1);
+        }
+  }]);
+
+
+  app.service("FilterService", function($http){
+        console.log("FilterService on")
+        //this.review = {};
+
+        this.postFilter = function(category, difficulty, tags, all) {
+            if (all){
+              return $http({
+                method   : 'GET',
+                url      : '/problems/json/all/',
+                headers  : {'Content-Type': 'application/json'},
+              });
+            }
+            else {
+              filter_url = '/problems/filter/';
+              console.log("The url is: ", filter_url)
+               return $http({
+                   method  : 'POST',
+                   url     : filter_url,
+                   data    : {
+                              "filters": [{
+                                "type": "filter",
+                                "property": "category",
+                                "value": category
+                              }, {
+                                "type": "filter",
+                                "property": "difficulty",
+                                "value": difficulty
+                              }, {
+                                "type": "filter",
+                                "property": "tags__tag_name__in",
+                                "value": tags
+                              }]
+                            },
+                   headers : {'Content-Type': 'application/json'},
+              });
+            }
+        }
+  });
+
+
+  app.service("TagsService", function($http){
+        console.log("TagsService on")
+        //this.review = {};
+
+        this.getTags = function() {
+            tags_url = '/problems/tags_json/';
+            console.log("The url is: ", tags_url)
+             return $http({
+                 method  : 'GET',
+                 url     : tags_url,
+                 headers : {'Content-Type': 'application/json'},
+            });
+        }
+  });
+
 	app.service("VoteService", function($http){
         console.log("VoteService on")
         //this.review = {};
@@ -272,203 +459,209 @@
       };
   });
 
-app.controller('FormController', ['$scope', '$http', '$window', function($scope, $http, $window){
-		// Set defaults where necessary
-		$scope.difficulty = 'EASY';
 
-    $scope.tags = []
-    var problemData = JSON.parse(sessionStorage.getItem('problems'));
-    problemData.forEach(getData);
-    function getData(allData) {
-      allData.fields.tags.forEach(getTags);
-      function getTags(tag) {
-        if ($scope.tags.indexOf(tag) == -1) {
-          $scope.tags.push(tag);
-        }
-      }
-    }
+// app.controller('FormController', ['$scope', '$http', '$window', 'TagsService', function($scope, $http, $window){
+// 		// Set defaults where necessary
+// 		$scope.difficulty = 'EASY';
 
-    $scope.searchText = '';
-    $scope.suggestions = [];
-		$scope.selectedTags = [];
-		$scope.selectedIndex = 0;
+//     $scope.tags = []
+//     $scope.getTags = function() {
+//         console.log("Inside getTags")
+//         TagsService.getTags().then(function(dataResponse){
+//             var data = JSON.parse(dataResponse.data)
+//             console.log("Raw fetch data: ", data)
 
-    $scope.search = function() {
-			if ($scope.searchText) {
-				searchText = $scope.searchText.toLowerCase();
-			} else {
-				searchText = $scope.searchText;
-			}
+//             for (var tag in data){
+//                console.log(data[tag])
+//                $scope.tags.push(data[tag].fields['tag_name'])
+//             }
+//             console.log("The tags var is: ", $scope.tags)
+//             // $scope.likes = dataResponse.data.Item.likes;
+//             // $scope.dislikes = dataResponse.data.Item.dislikes;
+//         });
+//     };
 
-      $scope.suggestions.length = 0;
-			$scope.tags.forEach(suggest);
-			function suggest(value) {
-				var value = value.toLowerCase();
-				if (value.indexOf($scope.searchText) === 0 && $scope.searchText.length > 0 && $scope.suggestions.indexOf(value) === -1) {
-					$scope.suggestions.push(value);
-				}
-			}
-			$scope.selectedIndex = 0;
-		}
+//     $scope.searchText = '';
+//     $scope.suggestions = [];
+// 		$scope.selectedTags = [];
+// 		$scope.selectedIndex = 0;
 
-    $scope.checkKeyDown = function(event) {
-			if (event.keyCode === 40) { //down key, increment selectedIndex
-				event.preventDefault();
-				if ($scope.selectedIndex+1 !== $scope.suggestions.length) {
-					$scope.selectedIndex++;
-				}
-			}
-			else if (event.keyCode === 38) { //up key, decrement selectedIndex
-				event.preventDefault();
-				if ($scope.selectedIndex-1 !== -1) {
-					$scope.selectedIndex--;
-				}
-			}
-			else if (event.keyCode === 9) { //Tab (9) pressed
-				if ($scope.searchText.length > 0) {
-					event.preventDefault();
-					$scope.addToSelectedTags($scope.selectedIndex);
-					$scope.searchText = '';
-					$scope.search();
-				}
-			}
-      else if (event.keyCode === 13 || event.type == "blur") { // Enter (13) pressed
-        if ($scope.searchText.length > 0) {
-					event.preventDefault();
-          $scope.pushToSelectedTags($scope.searchText); // Force add raw data, not suggestion
-          $scope.searchText = '';
-					$scope.search();
-        }
-      }
-		}
+//     $scope.search = function() {
+// 			if ($scope.searchText) {
+// 				searchText = $scope.searchText.toLowerCase();
+// 			} else {
+// 				searchText = $scope.searchText;
+// 			}
 
-    $scope.addToSelectedTags = function(index) {
-			if ($scope.suggestions.length > 0) {
-				if ($scope.selectedTags.indexOf($scope.suggestions[index]) == -1) {
-					$scope.selectedTags.push($scope.suggestions[index]);
-				}
-			}
-			else {
-				if ($scope.selectedTags.indexOf($scope.searchText) == -1 && $scope.searchText !== '') {
-					$scope.selectedTags.push($scope.searchText);
-				}
-			}
-		}
-    $scope.pushToSelectedTags = function(tag) {
-      $scope.selectedTags.push(tag);
-    }
+//       $scope.suggestions.length = 0;
+// 			$scope.tags.forEach(suggest);
+// 			function suggest(value) {
+// 				var value = value.toLowerCase();
+// 				if (value.indexOf($scope.searchText) === 0 && $scope.searchText.length > 0 && $scope.suggestions.indexOf(value) === -1) {
+// 					$scope.suggestions.push(value);
+// 				}
+// 			}
+// 			$scope.selectedIndex = 0;
+// 		}
 
-    $scope.removeTag = function(index) {
-			$scope.selectedTags.splice(index, 1);
-		}
+//     $scope.checkKeyDown = function(event) {
+// 			if (event.keyCode === 40) { //down key, increment selectedIndex
+// 				event.preventDefault();
+// 				if ($scope.selectedIndex+1 !== $scope.suggestions.length) {
+// 					$scope.selectedIndex++;
+// 				}
+// 			}
+// 			else if (event.keyCode === 38) { //up key, decrement selectedIndex
+// 				event.preventDefault();
+// 				if ($scope.selectedIndex-1 !== -1) {
+// 					$scope.selectedIndex--;
+// 				}
+// 			}
+// 			else if (event.keyCode === 9) { //Tab (9) pressed
+// 				if ($scope.searchText.length > 0) {
+// 					event.preventDefault();
+// 					$scope.addToSelectedTags($scope.selectedIndex);
+// 					$scope.searchText = '';
+// 					$scope.search();
+// 				}
+// 			}
+//       else if (event.keyCode === 13 || event.type == "blur") { // Enter (13) pressed
+//         if ($scope.searchText.length > 0) {
+// 					event.preventDefault();
+//           $scope.pushToSelectedTags($scope.searchText); // Force add raw data, not suggestion
+//           $scope.searchText = '';
+// 					$scope.search();
+//         }
+//       }
+// 		}
 
-    // Submit function
-		$scope.submit = function() {
-			// Define required fields
-			var required = [$scope.title, $scope.difficulty, $scope.description, $scope.selectedTags];
-			// Set counter to check each required field actually contains data
-			var allDataPresent = '0';
-      required.forEach(checkData);
-			// Check that all the required fields contain data
-			function checkData(value) {
-				if (value && value.length > 0) {
-					allDataPresent++;
-				}
-			}
-			// If all required fields contain data, then submit
+//     $scope.addToSelectedTags = function(index) {
+// 			if ($scope.suggestions.length > 0) {
+// 				if ($scope.selectedTags.indexOf($scope.suggestions[index]) == -1) {
+// 					$scope.selectedTags.push($scope.suggestions[index]);
+// 				}
+// 			}
+// 			else {
+// 				if ($scope.selectedTags.indexOf($scope.searchText) == -1 && $scope.searchText !== '') {
+// 					$scope.selectedTags.push($scope.searchText);
+// 				}
+// 			}
+// 		}
+//     $scope.pushToSelectedTags = function(tag) {
+//       $scope.selectedTags.push(tag);
+//     }
 
-			if (allDataPresent == required.length) {
-        document.getElementById('id_tags').required = false;
-        document.getElementById('id_articles').required = false;
+//     $scope.removeTag = function(index) {
+// 			$scope.selectedTags.splice(index, 1);
+// 		}
 
-        var tagString = arrayToCSV($scope.selectedTags);
-        var articleString = arrayToCSV($scope.articles);
+//     // Submit function
+// 		$scope.submit = function() {
+// 			// Define required fields
+// 			var required = [$scope.title, $scope.difficulty, $scope.description, $scope.selectedTags];
+// 			// Set counter to check each required field actually contains data
+// 			var allDataPresent = '0';
+//       required.forEach(checkData);
+// 			// Check that all the required fields contain data
+// 			function checkData(value) {
+// 				if (value && value.length > 0) {
+// 					allDataPresent++;
+// 				}
+// 			}
+// 			// If all required fields contain data, then submit
 
-        function arrayToCSV(array) {
-          var temp = '';
-          array.forEach(toCSV);
-          function toCSV(value, index) {
-            if (index == 0) {
-              temp = value;
-            } else {
-              temp = temp + ',' + value;
-            }
-          }
-          return temp;
-        }
+// 			if (allDataPresent == required.length) {
+//         document.getElementById('id_tags').required = false;
+//         document.getElementById('id_articles').required = false;
 
-				// Payload for POST request
-				//$scope.description = encodeURIComponent($scope.description)
-				$scope.description_escaped = $scope.description.replace(/\\n/g, "\\n")
-                                      						   .replace(/\\'/g, "\\'")
-						                                       .replace(/\\"/g, '\\"')
-						                                       .replace(/\\&/g, "\\&")
-						                                       .replace(/\\r/g, "\\r")
-						                                       .replace(/\\t/g, "\\t")
-						                                       .replace(/\\b/g, "\\b")
-						                                       .replace(/\\f/g, "\\f");
-				var payload = {
-					'title': $scope.title,
-					'difficulty': $scope.difficulty,
-					'description': $scope.description_escaped,
-					'tags_list': tagString,
-				};
+//         var tagString = arrayToCSV($scope.selectedTags);
+//         var articleString = arrayToCSV($scope.articles);
 
-        // POST request to submit data
-				$http.post('/problems/create_problem/', payload, {"Content-Type": "application/json; charset=utf-8"}).
-					then (function(response) {
-            $http.get('/problems/problems_JSON/').then(function(problemResponse){
-              sessionStorage.removeItem('problems');
-        			var data = JSON.parse(JSON.parse(problemResponse.data));
-        			sessionStorage.setItem('problems', JSON.stringify(data));
-              // console.log(JSON.stringify(data.data, null, 2));
-              $window.location.href = '/problems/' + response.data;
-            });
-          });
-      }
-    }
-  }]);
+//         function arrayToCSV(array) {
+//           var temp = '';
+//           array.forEach(toCSV);
+//           function toCSV(value, index) {
+//             if (index == 0) {
+//               temp = value;
+//             } else {
+//               temp = temp + ',' + value;
+//             }
+//           }
+//           return temp;
+//         }
 
-  app.controller('ProblemsController', ['$scope', '$http', '$window', function($scope, $http, $window) {
-    //
-  }]);
+// 				// Payload for POST request
+// 				//$scope.description = encodeURIComponent($scope.description)
+// 				$scope.description_escaped = $scope.description.replace(/\\n/g, "\\n")
+//                                       						   .replace(/\\'/g, "\\'")
+// 						                                       .replace(/\\"/g, '\\"')
+// 						                                       .replace(/\\&/g, "\\&")
+// 						                                       .replace(/\\r/g, "\\r")
+// 						                                       .replace(/\\t/g, "\\t")
+// 						                                       .replace(/\\b/g, "\\b")
+// 						                                       .replace(/\\f/g, "\\f");
+// 				var payload = {
+// 					'title': $scope.title,
+// 					'difficulty': $scope.difficulty,
+// 					'description': $scope.description_escaped,
+// 					'tags_list': tagString,
+// 				};
 
-  app.filter('problemsFilter', function() {
-    return function(items, scope) {
-      var filtered = [];
-      var checksum = [];
-      angular.forEach(items, function(item) {
+//         // POST request to submit data
+// 				$http.post('/problems/create_problem/', payload, {"Content-Type": "application/json; charset=utf-8"}).
+// 					then (function(response) {
+//             $http.get('/problems/problems_JSON/').then(function(problemResponse){
+//               sessionStorage.removeItem('problems');
+//         			var data = JSON.parse(JSON.parse(problemResponse.data));
+//         			sessionStorage.setItem('problems', JSON.stringify(data));
+//               // console.log(JSON.stringify(data.data, null, 2));
+//               $window.location.href = '/problems/' + response.data;
+//             });
+//           });
+//       }
+//     }
+//   }]);
 
-        itemTags = [];
-        item.fields.tags.forEach(lowerCase);
-        function lowerCase(value) {
-          if (typeof(value) == 'string') {
-            itemTags.push(value.toLowerCase());
-          } else {
-            itemTags.push(value);
-          }
-        }
+//   app.controller('ProblemsController', ['$scope', '$http', '$window', function($scope, $http, $window) {
+//     //
+//   }]);
 
-        if (scope.selectedTags.length == 0) {
-          filtered.push(item);
-        } else {
-          scope.selectedTags.forEach(checkTags);
-          function checkTags(value) {
-            if (itemTags.indexOf(value) == -1) {
-              checksum.push(0);
-            } else {
-              checksum.push(1);
-            }
-          }
-          if (checksum.indexOf(0) == -1) {
-            filtered.push(item);
-          }
-        }
-        checksum = [];
-      });
-      return filtered;
-    }
-  });
+//   app.filter('problemsFilter', function() {
+//     return function(items, scope) {
+//       var filtered = [];
+//       var checksum = [];
+//       angular.forEach(items, function(item) {
+
+//         itemTags = [];
+//         item.fields.tags.forEach(lowerCase);
+//         function lowerCase(value) {
+//           if (typeof(value) == 'string') {
+//             itemTags.push(value.toLowerCase());
+//           } else {
+//             itemTags.push(value);
+//           }
+//         }
+
+//         if (scope.selectedTags.length == 0) {
+//           filtered.push(item);
+//         } else {
+//           scope.selectedTags.forEach(checkTags);
+//           function checkTags(value) {
+//             if (itemTags.indexOf(value) == -1) {
+//               checksum.push(0);
+//             } else {
+//               checksum.push(1);
+//             }
+//           }
+//           if (checksum.indexOf(0) == -1) {
+//             filtered.push(item);
+//           }
+//         }
+//         checksum = [];
+//       });
+//       return filtered;
+//     }
+//   });
 
 
 })();

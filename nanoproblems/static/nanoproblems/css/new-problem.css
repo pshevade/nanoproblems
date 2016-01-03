@@ -6,7 +6,9 @@ body {
   background-color: #f9f9f9;
   border-bottom: 1px solid #e3e3e3;
 }
-
+.inline {
+  display: inline;
+}
 .nav-brand {
   font: 600 small-caps 1.35em "Open Sans", sans-serif;
   letter-spacing: 0.08em;

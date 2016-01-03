@@ -30,14 +30,76 @@
 
 
 
-  <main class="container problems-container" id="problems" ng-controller="FilterController as filter">
+  <main class="container problems-container" id="problems" ng-controller="FilterController" ng-init="init_filter()">
 
     <div class="row">
-      <div class="col-xs-12">
+      <div class="col-xs-12 col-md-12">
         <section class="filter-section">
-          <form class="filter-form">
-            <h3 class="filter-title">Filter by tags</h3>
-            <input class="filter" type="text" ng-model="searchText" ng-keydown="checkKeyDown($event)" ng-change="search()" placeholder="e.g. python">
+          <form ng-submit="postFilter()">
+              <div class="row">
+                <div class="col-xs-12 col-md-4">
+                  <h3 class="filter-title">Tags</h3>
+                  <input type="text" class="filter" id="id_tags" ng-keydown="checkKeyDown($event)" ng-blur="checkKeyDown($event)" ng-model="searchText" ng-change="search()" placeholder="e.g python" size='15' maxlength="10">
+                  <ul class="list-group" ng-show="suggestions">
+                    <li ng-repeat="suggestion in suggestions | limitTo: 3" class="list-group-item">
+                      [[ suggestion ]]
+                    </li>
+                  </ul>
+                </div>
+
+              <!-- <input type="text" class="filter" ng-keydown="checkKeyDown($event)" ng-blur="checkKeyDown($event)" ng-model="searchText" ng-change="search()" placeholder="e.g python"required>
+              <ul class="list-group">
+                <li ng-repeat="suggestions in suggestions | limitTo: 3" class="list-group-item" ng-class="[active: selectedIndex === $index]">
+                  [[ suggestions ]]
+                </li>
+              </ul>
+              <span ng-repeat="selectedTag in selectedTags" class="inline text-left">
+                [[ selectedTag ]] <a ng-click="removeTag($index)" class="badge">x</a> &nbsp &nbsp
+              </span> -->
+
+                <div class="col-xs-12 col-md-4">
+                  <h3 class="filter-title">Difficulty</h3>
+                  <select class="form-control" name='difficulty' ng-model="difficulty">
+                    <option selected value="ALL">All</option>
+                    <option value="EASY">Easy</option>
+                    <option value="MEDIUM">Medium</option>
+                    <option value="HARD">Hard</option>
+                  </select>
+                </div>
+                <div class="col-xs-12 col-md-4">
+                  <h3 class="filter-title">Category</h3>
+                  <select class="form-control" name='category' ng-model="category">
+                    <option selected value="ALL">All</option>
+                    <option value="INTERVIEW">Interview</option>
+                    <option value="CHALLENGE">Challenge</option>
+                    <option value="QUESTION">Question</option>
+                    <option value="CONTEST">Contest</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-12">
+                  <span ng-repeat="selectedTag in selectedTags" class="inline text-left">
+                      [[ selectedTag ]] <a ng-click="removeTag($index)" class="badge">x</a> &nbsp &nbsp
+                  </span>
+                </div>
+              </div>
+              <br>
+              <div class="row">
+                <div class="col-xs-12">
+                  <button type="submit" class="filter-title btn btn-default">Filter</button>
+                  <input type="button" class="filter-title btn btn-default" value="Reset" ng-click="init_filter()"></button>
+                </div>
+              </div>
+              <!-- <input type="text" class="filter" ng-keydown="checkKeyDown($event)" ng-blur="checkKeyDown($event)" ng-model="searchText" ng-change="search()" placeholder="e.g python"required>
+              <ul class="list-group">
+                <li ng-repeat="suggestions in suggestions | limitTo: 3" class="list-group-item" ng-class="[active: selectedIndex === $index]">
+                  [[ suggestions ]]
+                </li>
+              </ul>
+              <span ng-repeat="selectedTag in selectedTags" class="inline text-left">
+                [[ selectedTag ]] <a ng-click="removeTag($index)" class="badge">x</a> &nbsp &nbsp
+              </span> -->
           </form>
         </section>
       </div>
@@ -45,50 +107,46 @@
 
     <div class="row">
       <div class="col-xs-12">
-        {% for problem in latest_problems_list %}
-          <div class="panel panel-default text-left">
+          <div class="panel panel-default text-left" ng-repeat="problem in problems">
             <hr class="panel-divider">
-            <div class="question-link" href="{% url 'problems:problem_detail' problem.id%}">
+            <div class="question-link" href="">
               <div class="panel-body">
                 <div class="row">
                   <div class="col-xs-12 col-md-6">
-                    <a class="problem-title-link" href="{% url 'problems:problem_detail' problem.id%}">
-                      <h4 class="problem-title">{{problem.title}}</h4>
+                    <a class="problem-title-link" href="[[problem.pk]]/">
+                      <p class="problem-title text-left">[[problem.fields.title]]</p>
                     </a>
                   </div>
                   <div class="col-xs-12 col-md-6 text-right">
-                    <button class="score-button">{{problem.likes}}<i class="fa fa-thumbs-o-up score-icon"></i></button>
-                    <button class="score-button">{{problem.dislikes}}<i class="fa fa-thumbs-o-down score-icon"></i></button>
+                    <button class="score-button">[[problem.fields.likes]]<i class="fa fa-thumbs-o-up score-icon"></i></button>
+                    <button class="score-button">[[problem.fields.dislikes]]<i class="fa fa-thumbs-o-down score-icon"></i></button>
+                  </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-md-6" ng-bind-html="renderHtml(problem.fields.description)"></div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12 col-md-6">
+                    <h4 class="problem-difficulty">[[problem.fields.difficulty ]]</h4>
                   </div>
                 </div>
                 <div class="row">
                   <div class="col-xs-12 col-md-6">
-                    {{ problem.description | safe }}
+                    <h4 class="problem-difficulty">[[problem.fields.category]]</h4>
                   </div>
                 </div>
                 <div class="row">
                   <div class="col-xs-12 col-md-6">
                     <ul class="tags list-inline">
-                      {% for tag in problem.tags.all %}
-                        <li class="tag">{{ tag.tag_name }}</li>
-                      {% endfor %}
+                        <li class="tag" ng-repeat="tag in problem.fields.tags">[[tag]]</li>
                     </ul>
                   </div>
-                </div>
-                <div class="row">
-                  <div class="col-xs-12 col-md-6">
-                    <h4 class="problem-difficulty">{{ problem.difficulty }}</h4>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-xs-12 col-md-6">
-                    <h4 class="problem-difficulty">{{ problem.category }}</h4>
-                  </div>
+                  <div class="col-xs-12 col-md-6 text-right" ng-show="problem.fields.marked">
+                    <img src="{% static 'images/udacity-logo-small.png' %}">
                 </div>
               </div>
             </div>
           </div>
-        {% endfor %}
       </div>
     </div>
 

@@ -1,6 +1,9 @@
 .add-title {
   text-align: left;
 }
+.inline {
+  display: inline;
+}
 
 .new-form {
   max-width: 600px;

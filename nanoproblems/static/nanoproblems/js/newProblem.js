@@ -174,6 +174,7 @@
 				var payload = {
 					'title': $scope.title,
 					'difficulty': $scope.difficulty,
+                    'category': $scope.category,
 					'description': $scope.description_escaped,
 					'tags_list': tagString,
 				};

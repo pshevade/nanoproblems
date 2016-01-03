@@ -134,10 +134,23 @@ def problem_as_json(request, problem_id):
                         content_type='application/json')
 
 
-@is_admin()
+@is_authenticated()
+def filter(request):
+    print "Hit filter, here is raw data: ", request.body
+    if request.is_ajax():
+        if request.method == 'POST':
+            return HttpResponse(logic.get_filtered_problems(request.body), content_type='application/json')
+
+
 @is_authenticated()
 def problems_json(request):
+    print "inside problems_json"
     return HttpResponse(logic.get_problems_json(), content_type='application/json')
+
+
+@is_authenticated()
+def tags_json(request):
+    return HttpResponse(logic.get_tags_json(), content_type='application/json')
 
 
 @is_authenticated()

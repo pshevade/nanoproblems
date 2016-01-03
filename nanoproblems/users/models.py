@@ -23,7 +23,7 @@ class User(models.Model):
         return self.nickname
 
     def natural_key(self):
-        return (self.email, self.nickname)
+        return (str(self.user_key), self.nickname)
 
     class Meta:
-        unique_together = (('email', 'nickname'))
+        unique_together = (('user_key', 'nickname'))

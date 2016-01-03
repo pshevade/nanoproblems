@@ -177,38 +177,42 @@ def vote_on_solution(request, solution, vote):
     return solution
 
 
+def get_tags_json():
+    tags = Tag.objects.all()
+    tags_serialized = serializers.serialize('json',
+                                            tags,
+                                            fields=('tag_name'))
+    return json.dumps(tags_serialized)
+
+
 def get_problem_as_json(problem):
     if problem:
         problem.description = markdown.markdown(problem.description,
                                                 extensions=['markdown.extensions.fenced_code'])
-        problem_serialized = serializers.serialize('json',
-                                                   [problem],
-                                                   fields=('title',
-                                                           'posted',
-                                                           'difficulty',
-                                                           'description',
-                                                           'tags',
-                                                           'likes',
-                                                           'dislikes',
-                                                           'user',
-                                                           'pk'),
-                                                   use_natural_foreign_keys=True)
-        return json.dumps(problem_serialized)
+        return serialize_problems([problem])
     else:
         return None
 
 
 def get_problems_json():
     problems = Problem.objects.all()
+    print "I got all problems."
     for problem in problems:
         problem.description = markdown.markdown(problem.description,
                                                 extensions=['markdown.extensions.fenced_code'])
+    return serialize_problems(problems)
+
+
+def serialize_problems(problems):
+    print "going to serialize problems and return json"
     problems_serialized = serializers.serialize('json',
                                                 problems,
                                                 fields=('title',
                                                         'posted',
                                                         'difficulty',
+                                                        'category',
                                                         'description',
+                                                        'marked',
                                                         'tags',
                                                         'likes',
                                                         'dislikes',
@@ -216,6 +220,39 @@ def get_problems_json():
                                                         'pk'),
                                                 use_natural_foreign_keys=True)
     return json.dumps(problems_serialized)
+
+
+def get_filtered_problems(raw_request_body):
+    print "inside get_filtered_problems"
+    filters = json.loads(raw_request_body)['filters']
+    print "got filters from raw request body"
+    # First order the objects, so separate that out
+    orders_query = [o for o in filters if o['type']=='order']
+    # Filter objects next, so separate those out
+    filters_query = [f for f in filters if f['type']=='filter']
+
+    # We need a dictonary to pass to Django's filter function
+    query_dict = {}
+    # create the dictonary based on the filtering queries
+    for fil in filters_query:
+        print "current filter is: ", fil
+        print "its value is: ", fil['value']
+        if fil['value'] == 'ALL' or fil['value'] == []:
+            pass
+        else:
+            print "inside the conditional"
+            # Make a dictionary, property: value, and you can pass it to filter fn
+            query_dict[fil['property']] = fil['value']
+    if query_dict:
+        print "Here is the dictionary to query: ", query_dict
+        problems = Problem.objects.filter(**query_dict).distinct()
+    else:
+        problems = Problem.objects.all()
+    # Order the projects based on the ordering queries
+    for orders in orders_query:
+        problems = problems.order_by(orders['property'])
+    print "processed filters just fine."
+    return serialize_problems(problems)
 
 
 def get_problem_details(request, problem_id):
