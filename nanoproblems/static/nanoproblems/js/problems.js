@@ -174,6 +174,15 @@
         $scope.selectedIndex = 0;
         $scope.problems = []
 
+        $scope.is_data = function(){
+          if ($scope.problems.length > 0){
+            return true
+          }
+          else {
+            return false
+          }
+        }
+
         $scope.renderHtml = function (htmlCode){
           return $sce.trustAsHtml(htmlCode);
         };
@@ -183,7 +192,7 @@
           $scope.difficulty = 'ALL'
           $scope.category = 'ALL'
           $scope.getTags()
-          $scope.postFilter(true)
+          // $scope.postFilter(true)
         }
 
         $scope.postFilter = function(all) {

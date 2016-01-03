@@ -107,6 +107,7 @@
 
     <div class="row">
       <div class="col-xs-12">
+        <div ng-show="is_data()">
           <div class="panel panel-default text-left" ng-repeat="problem in problems">
             <hr class="panel-divider">
             <div class="question-link" href="">
@@ -123,7 +124,10 @@
                   </div>
                 </div>
                 <div class="row">
-                    <div class="col-xs-12 col-md-6" ng-bind-html="renderHtml(problem.fields.description)"></div>
+                    <div class="col-xs-12 col-md-6 text-left" ng-bind-html="renderHtml(problem.fields.description)"></div>
+                    <div class="col-xs-12 col-md-6 text-right" ng-show="problem.fields.marked">
+                    <img src="{% static 'images/udacity-logo-small.png' %}">
+                </div>
                 </div>
                 <div class="row">
                   <div class="col-xs-12 col-md-6">
@@ -141,14 +145,64 @@
                         <li class="tag" ng-repeat="tag in problem.fields.tags">[[tag]]</li>
                     </ul>
                   </div>
-                  <div class="col-xs-12 col-md-6 text-right" ng-show="problem.fields.marked">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div ng-hide="is_data()">
+        {% for problem in latest_problems_list %}
+          <div class="panel panel-default text-left">
+            <hr class="panel-divider">
+            <div class="question-link" href="{% url 'problems:problem_detail' problem.id%}">
+              <div class="panel-body">
+                <div class="row">
+                  <div class="col-xs-12 col-md-6">
+                    <a class="problem-title-link" href="{% url 'problems:problem_detail' problem.id%}">
+                      <h4 class="problem-title">{{problem.title}}</h4>
+                    </a>
+                  </div>
+                  <div class="col-xs-12 col-md-6 text-right">
+                    <button class="score-button">{{problem.likes}}<i class="fa fa-thumbs-o-up score-icon"></i></button>
+                    <button class="score-button">{{problem.dislikes}}<i class="fa fa-thumbs-o-down score-icon"></i></button>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12 col-md-6 text-left">
+                    {{ problem.description | safe }}
+                  </div>
+                  {% if problem.marked %}
+                  <div class="col-xs-12 col-md-6 text-right">
                     <img src="{% static 'images/udacity-logo-small.png' %}">
+                  </div>
+                  {% endif %}
+                </div>
+                <div class="row">
+                  <div class="col-xs-12 col-md-6">
+                    <h4 class="problem-difficulty">{{ problem.difficulty }}</h4>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12 col-md-6">
+                    <h4 class="problem-difficulty">{{ problem.category }}</h4>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12 col-md-6">
+                    <ul class="tags list-inline">
+                      {% for tag in problem.tags.all %}
+                        <li class="tag">{{ tag.tag_name }}</li>
+                      {% endfor %}
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+        {% endfor %}
       </div>
     </div>
+  </div>
 
     <h2 class="submit-option option-title second-submit">
       <a class="submit-text option-text" href="{% url 'problems:new_problem' %}">submit a problem<i class="fa fa-angle-right option-icon submit-icon"></i></a>
