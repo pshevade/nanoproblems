@@ -173,13 +173,15 @@
         $scope.selectedTags = [];
         $scope.selectedIndex = 0;
         $scope.problems = []
+        $scope.reset = true
 
-        $scope.is_data = function(){
-          if ($scope.problems.length > 0){
-            return true
+        $scope.is_ajax_data = function(){
+          if ($scope.reset){
+            console.log("$scope.reset is true: ", $scope.reset)
+            return false
           }
           else {
-            return false
+            return true
           }
         }
 
@@ -193,11 +195,13 @@
           $scope.category = 'ALL'
           $scope.problems = []
           $scope.tags = []
+          $scope.reset = true
           $scope.getTags()
           // $scope.postFilter(true)
         }
 
         $scope.postFilter = function(all) {
+          $scope.reset = false
           console.log("making a filter query")
           FilterService.postFilter($scope.category, $scope.difficulty, $scope.selectedTags, all).then(function(dataResponse){
             $scope.problems = JSON.parse(dataResponse.data)
