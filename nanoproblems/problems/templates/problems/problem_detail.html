@@ -38,7 +38,7 @@
                 </div>
                 <div class="row">
                   <p>
-                    Posted: {{problem.posted}}
+                    Posted: {{problem.posted|date:"F d Y"}}
                   </p>
                 </div>
 
@@ -142,7 +142,7 @@
               <div class="col-xs-12" ng-bind-html="renderHtml(comment.fields.content)">
               </div>
               <div class="col-xs-12">
-                <em>[[comment.fields.posted]]</em>
+                <em>[[comment.fields.posted | date : "MMM d yyyy', at' hh:mm a "]]</em>
               </div>
             </div>
             <div class="row">

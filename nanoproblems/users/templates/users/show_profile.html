@@ -18,7 +18,11 @@
 
     <div class="row sections">
       <div class="col-xs-12 col-sm-6 section">
+      {% if current_user == user.email %}
         <h3 class="section-title">Your problem ideas:</h3>
+      {% else %}
+        <h3 class="section-title">{{user.nickname}}'s problem ideas:</h3>
+      {% endif %}
         <hr class="border-hr">
         {% if problems %}
         <ul class="list-unstyled profile-list">
@@ -64,8 +68,11 @@
       </div>
 
       <div class="col-xs-12 col-sm-6 section">
+        {% if current_user == user.email %}
         <h3 class="section-title">Your solutions on problems:</h3>
-        <hr class="border-hr">
+      {% else %}
+        <h3 class="section-title">{{user.nickname}}'s solutions on problems:</h3>
+      {% endif %}<hr class="border-hr">
         {% if solutions %}
         <ul class="list-unstyled profile-list">
             {% for solution in solutions %}
@@ -99,7 +106,11 @@
 
     <div class="row sections">
         <div class="col-xs-12 col-sm-6 section">
-          <h3 class="section-title">Problems you've liked:</h3>
+          {% if current_user == user.email %}
+            <h3 class="section-title">Problems you've liked:</h3>
+          {% else %}
+            <h3 class="section-title">Problems {{user.nickname}} has liked:</h3>
+          {% endif %}
           <hr class="border-hr">
           {% if liked_problems %}
           <ul class="list-unstyled profile-list">
@@ -145,8 +156,11 @@
         </div>
 
         <div class="col-xs-12 col-sm-6 section">
-          <h3 class="section-title">Solutions you've liked:</h3>
-          <hr class="border-hr">
+          {% if current_user == user.email %}
+            <h3 class="section-title">Solutions you've liked:</h3>
+          {% else %}
+            <h3 class="section-title">Solutions {{user.nickname}} has liked:</h3>
+          {% endif %}<hr class="border-hr">
           {% if liked_solutions %}
           <ul class="list-unstyled profile-list">
               {% for solution in liked_solutions %}

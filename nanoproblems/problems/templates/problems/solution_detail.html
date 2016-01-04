@@ -82,12 +82,12 @@
 
               </div>
               <div class="col-xs-12">
-                <em>[[comment.fields.posted]]</em>
+                <em>[[comment.fields.posted | date : "MMM d yyyy', at' hh:mm a "]]</em>
               </div>
             </div>
             <div class="row">
               <div class="col-xs-6 col-md-6">
-                  [[ comment.fields.user[0] ]]
+                  [[ comment.fields.user[1] ]]
               </div>
               <div class="col-xs-6 col-md-6 text-right" ng-show="can_delete_comment('{{user.email}}', comment, '{{user.is_admin}}')">
                   <img ng-click="deleteComment(comment.pk)" src="{% static "images/delete-black-1x.png" %}" alt="Delete"/>

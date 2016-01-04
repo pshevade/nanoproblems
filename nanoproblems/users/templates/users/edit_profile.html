@@ -1,23 +1,21 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Nanoproblems</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"/>
+{% extends "problems/base.html" %}
+{% block content %}
   {% load staticfiles %}
-  <link rel="stylesheet" type="text/css" href="{% static "css/bobblehead.css" %}"/>
-</head>
 
-<body class="container">
-  <div class="row pad-10 margin-top-20 highlight">
-    <div class="col-md-12">
-      <a href="{% url 'users:show' user.user_key %}">
-        <img src="{% static "images/arrow-back-white-1x.png" %}" alt="Back to Profile"/>
-        Cancel
-      </a>
+
+<section class="jumbotron-section">
+    <div class="container">
+      <div class="jumbotron">
+        <div class="fluid-container">
+          <div class="row">
+            <div class="col-xs-12">
+            <h3 class="section-title">{{ user.nickname }}'s Profile</h3>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
-
+  </section>
   <form action="{% url 'users:edit' %}" method="post" class="form-horizontal pad-top-20">
     {% csrf_token %}
     <div class="form-group">
@@ -48,7 +46,5 @@
       </div>
     </div>
 
-  </form>
-
-</body>
-</html>
+    </form>
+{% endblock %}

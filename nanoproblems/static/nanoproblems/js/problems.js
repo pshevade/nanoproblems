@@ -191,6 +191,8 @@
           console.log ("init_filter")
           $scope.difficulty = 'ALL'
           $scope.category = 'ALL'
+          $scope.problems = []
+          $scope.tags = []
           $scope.getTags()
           // $scope.postFilter(true)
         }

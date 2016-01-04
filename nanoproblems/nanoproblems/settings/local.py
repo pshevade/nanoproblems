@@ -16,7 +16,7 @@ from config import django_secret
 
 # Since we added a level (settings folder), we add a new level of os.path.dirname
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-print "This is the base dir (in base.py): ", BASE_DIR
+print "This is the base dir (in local.py): ", BASE_DIR
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
@@ -24,12 +24,16 @@ print "This is the base dir (in base.py): ", BASE_DIR
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = django_secret.DJANGO_SECRET
 
+
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-# IF DEBUG is off, ALLOWED_HOSTS must have values
-ALLOWED_HOSTS = ['*']
-
+if os.environ.get('DEV') == 'False':
+    DEBUG = False
+    # IF DEBUG is off, ALLOWED_HOSTS must have values
+    ALLOWED_HOSTS = ['*']
+else:
+    DEBUG = True
+    # IF DEBUG is off, ALLOWED_HOSTS must have values
+    ALLOWED_HOSTS = []
 
 # Application definition
 
@@ -85,18 +89,18 @@ WSGI_APPLICATION = 'nanoproblems.wsgi.application'
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
     # 'default': {
-    #    'ENGINE': 'django.db.backends.postgresql_psycopg2',
-    #    'NAME': os.environ.get('DB_NAME'),
-    #    'USER': os.environ.get('DB_USER'),
-    #    'PASSWORD': os.environ.get('DB_PASSWORD'),
-    #    'HOST': os.environ.get('DB_HOST'),
-    #    'PORT': os.environ.get('DB_PORT'),
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     # }
+    'default': {
+       'ENGINE': 'django.db.backends.postgresql_psycopg2',
+       'NAME': os.environ.get('DB_NAME'),
+       'USER': os.environ.get('DB_USER'),
+       'PASSWORD': os.environ.get('DB_PASSWORD'),
+       'HOST': os.environ.get('DB_HOST'),
+       'PORT': os.environ.get('DB_PORT'),
+    }
 }
 print DATABASES
 
