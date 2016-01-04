@@ -5,4 +5,4 @@ if os.environ.get('PRODUCTION') == 'False':
     RETURN_URL = 'http://localhost:8000/users/login'
 else:
     REALM_URL = 'http://nanoproblems-dev.elasticbeanstalk.com/'
-    RETURN_URL = 'http://nanoproblems-dev.elasticbeanstalk.com/login'
+    RETURN_URL = 'http://nanoproblems-dev.elasticbeanstalk.com/users/login'
