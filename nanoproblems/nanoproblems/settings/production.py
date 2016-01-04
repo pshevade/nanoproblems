@@ -129,7 +129,7 @@ DATABASES = {
        'PORT': os.environ.get('DB_PORT'),
     }
 }
-print DATABASES
+print "in production!", DATABASES
 
 
 # Internationalization
@@ -152,6 +152,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_root")
+
+print "in production! The static root is: ", STATIC_ROOT
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static", "nanoproblems"),
