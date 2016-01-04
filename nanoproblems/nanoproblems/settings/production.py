@@ -16,7 +16,7 @@ from config import django_secret
 
 # Since we added a level (settings folder), we add a new level of os.path.dirname
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-print "This is the base dir (in local.py): ", BASE_DIR
+print "This is the base dir (in production.py): ", BASE_DIR
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
